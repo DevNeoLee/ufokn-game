@@ -195,7 +195,8 @@ io.on("connection", socket => {
             socket.broadcast.to('1').emit('norman_chat', data)
     })
 
-  
+    // socket.set("heartbeat timeout", 10);
+    // socket.set("heartbeat interval", 5);
 
     
 })

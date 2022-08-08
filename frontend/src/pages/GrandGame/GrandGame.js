@@ -35,6 +35,12 @@ import { sessionState, gameState } from '../../recoil/globalState';
 import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 
+import { bindProxyAndYMap } from "valtio-yjs";
+import { proxy, useSnapshot } from "valtio";
+
+import valtioState  from '../../valtio/valtioState';
+
+
 const doc = new Y.Doc();
 const wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
 
@@ -66,6 +72,8 @@ ymap.set('dance', 'crazy')
 
 export default function GrandGame() {
 
+    const snap = useSnapshot(valtioState);
+    
     const data = JSON.parse(JSON.stringify(original_data))
     
     const GAME_ROUND = 4;
@@ -307,6 +315,7 @@ export default function GrandGame() {
         return () => {
             setSocket(null);
         }
+
     }, [])
 
 
@@ -984,6 +993,7 @@ export default function GrandGame() {
             )}
         </section>
     );
+
     return (
         <div className="main">
             <div className="gameframe">
@@ -1017,7 +1027,7 @@ export default function GrandGame() {
                     { step !== 2 && <Buttons/> }
                 </>
                     : 
-                    <Instruction yarray={yarray} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} handleRoleChange={handleRoleChange} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} giveRoleRandomly={giveRoleRandomly} session={session} setRole={setRole} role={role} normans={normanRoles} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} />
+                    <Instruction yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} handleRoleChange={handleRoleChange} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} giveRoleRandomly={giveRoleRandomly} session={session} setRole={setRole} role={role} normans={normanRoles} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} />
                 } 
             </div>
         </div>
