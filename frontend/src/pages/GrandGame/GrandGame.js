@@ -42,7 +42,15 @@ import valtioState  from '../../valtio/valtioState';
 
 
 const doc = new Y.Doc();
-const wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
+
+let wsProvider;
+
+if (process.env.NODE_ENV === 'production') {
+    wsProvider = new WebsocketProvider('ws://ufokn-game.herokuapp.com/:1234', 'thisRoom', doc)
+} else {
+    wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
+}
+
 
 wsProvider.on('status', e => {
     console.log("status: ", doc);
