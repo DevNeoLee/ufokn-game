@@ -9,6 +9,7 @@ import Radio from "../../../components/Radio"
 import PetePopup from '../../../components/PetePopup';
 import PeteForm from '../../../components/PeteForm';
 import WaitModalPete from '../../../components/WaitModalPete';
+import DecisionControl from '../../../components/DecisionControl';
 
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -146,11 +147,22 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
         return houseChartdata["Depth Estimate in 3 Hours"] = houseChartdata["Depth Estimate in 3 Hours"] - houseChartdata["Current Water Depth"]
     }
 
+    const handleDecisionBox = (e) => {
+        e.preventDefault();
+        setPopForm(true)
+    }
+
+    const handleFormClose = () => {
+        console.log('hello there')
+        setPopForm(false)
+    }
+
     return (
         <>
+            {messageFromErica.toPete && < DecisionControl handleDecisionBox={handleDecisionBox} />}
             <div className={popup ? `petePopup` : `petePopup petePopClose`}><PetePopup setPopup={setPopup} /></div>
             {/* <div className={popForm ? `peteForm` : `peteForm peteFormClose`}><PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete}  handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower}/></div> */}
-            <div className={popForm ? `peteForm` : `peteForm peteFormClose`}>{popForm && <PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete} handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower} />}</div>
+            <div className={popForm ? `peteForm` : `peteForm peteFormClose`}>{popForm && <PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete} handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower} setPopForm={setPopForm} handlePeteForm={handlePeteForm} handleFormClose={handleFormClose} />}</div>
             <div className={waitPopup ? `waitModal` : `waitModal waitModalClose`}><WaitModalPete handleWaitModal={handleWaitModal} /></div>
             {userTaskDoneCounter}
 

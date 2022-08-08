@@ -9,7 +9,7 @@ import { Button, Form } from "react-bootstrap";
 import { useTransition, animated } from "react-spring";
 
 
-export default function NormanForm({ handleSubmitNorman, handleChangeWhichRoute, normanStay, handleChangeNormanStay, setPopForm}) {
+export default function NormanForm({ handleFormClose, handleSubmitNorman, handleChangeWhichRoute, normanStay, handleChangeNormanStay}) {
 
     const [stay, setStay] = useState(false);
 
@@ -34,6 +34,7 @@ export default function NormanForm({ handleSubmitNorman, handleChangeWhichRoute,
         <div className="">
             {transition2((style, item) =>
                 <animated.div style={style} className="roleframe">
+                    <span onClick={handleFormClose} style={{ position: "absolute", top: "10px", right: "15px", fontSize: "1.5rem", cursor: "pointer"}}>X</span>
                     <p>
                         Now time to decide, you check flood risk information.
                         What is your decision?</p>

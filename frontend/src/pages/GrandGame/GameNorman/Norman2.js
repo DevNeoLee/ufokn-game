@@ -9,6 +9,7 @@ import Radio from "../../../components/Radio"
 import NormanPopup from '../../../components/NormanPopup';
 import NormanForm from '../../../components/NormanForm';
 import WaitModalNorman from '../../../components/WaitModalNorman';
+import DecisionControl from '../../../components/DecisionControl';
 
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -35,8 +36,11 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const [chat, setChat] = useState("")
 
+
     //main decisions storage for all that happenings and result, health
     const [myDecisions, setMyDecisions] = useState([]);
+
+    const [decisionBox, setDecisionBox] = useState(false);
 
     // const handleMouseEnter1 = () => {
     //     setGraphData([
@@ -173,10 +177,10 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
         console.log('chat hoho1: ', chat)
 
         setChatData(prev => ({ ...prev, [round]: [...prev[round], chatMessage] }));
-        console.log('chat hoho2: ', chat)
+        console.log('chat hoho chatData: ', chatData)
 
-        setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: [...prev.chatting[round], chatMessage] } }))
-        console.log('chat hoho3, globalGame just changed: ', globalGame)
+        // setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: [...prev.chatting.round, chatMessage] } }))
+        // console.log('chat hoho3, globalGame just changed: ', globalGame)
 
         socket.emit("norman_chat", (chatMessage))
         setChat("")
@@ -188,15 +192,29 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
         setChat(e.target.value)
     }
+
+    const handleDecisionBox = (e) => {
+        e.preventDefault();
+        setPopForm(true)
+    }
+
+    const handleFormClose = () => {
+        console.log('hello there')
+        setPopForm(false)
+    }
+    
+    console.log('chatData: ', chatData)
     return (
         <>
+            {messageFromErica.toNorman && < DecisionControl  handleDecisionBox={handleDecisionBox} />}
             <div className={popup ? `normanPopup` : `normanPopup normanPopClose`}><NormanPopup setPopup={setPopup} /></div>
-            <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleNormanForm={handleNormanForm}/></div>
+            <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleNormanForm={handleNormanForm} handleFormClose={handleFormClose}/></div>
             <div className={waitPopup ? `waitModal` : `waitModal waitModalClose`}><WaitModalNorman handleWaitModal={handleWaitModal} /></div>
             {userTaskDoneCounter}
 
             <div className="gameBlockContainer">
                 <div className="leftContainer">
+
                     <div className="gameBlock3">
                         <div className="gamelogoline">
                             <div className="gamelogo">
@@ -218,7 +236,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                     left: 10,
                                     bottom: 0,
                                 }}
-                            >
+                                >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="name" tick={false} />
                                 <YAxis 
@@ -235,6 +253,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                         </div>
                     </div>
                     <div className="gameBlock1" >
+
                         <div className="houseWaterChart" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4} >
                             <AreaChart
                                 width={1404}
@@ -246,7 +265,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                     left: 10,
                                     bottom: 0,
                                 }}
-                            >
+                                >
                                 {/* <CartesianGrid strokeDasharray="3 3" /> */}
                                 <XAxis dataKey="name" tick={false} />
                                 <YAxis unit="cm" 
@@ -258,6 +277,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                 <Area type="monotone" dataKey="Current Water Depth" stackId="1" stroke="#8884d8" fill="#8884d8" />
                                 <Area type="monotone" dataKey="Depth Estimate in 3 Hours" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
                             </AreaChart>
+
                         </div>
                         <div className="houseStatus" >
                             <HouseFill size={330} className={electricity ? `bighouse on` : 'bighouse off'}  />
@@ -271,14 +291,14 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                         </div>
                         {/* <div className="cloudRain2">
                             <img src="/cloud3.png" alt="cloudRain" />
-                        </div>
-                        <div className="cloudRain3">
+                            </div>
+                            <div className="cloudRain3">
                             <img src="/cloud3.png" alt="cloudRain" />
-                        </div>
-                        <div className="cloudRain4">
+                            </div>
+                            <div className="cloudRain4">
                             <img src="/cloud3.png" alt="cloudRain" />
-                        </div>
-                        <div className="cloudRain5">
+                            </div>
+                            <div className="cloudRain5">
                             <img src="/cloud3.png" alt="cloudRain" />
                         </div> */}
 
@@ -293,8 +313,9 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                             <AiFillWechat size={30} color="white" /><span style={{ color: "white" }}> Neighborhood Chat App</span>
                             <h6>Discuss with other Normans (Neighbors)</h6>
                             <div className="chatScreen" id="message-container" ref={containerRef}>
-                                {chatData[round].map((data, i)=> (
-                                <div key={i}>
+                            ChatData.round: {round}
+                                { chatData[round] && chatData[round].map((data, i)=> (
+                                    <div key={i}>
                                         {data.role === role ? <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white"}}>You</span> : <span style={{ color: 'green', minWidth: "200px", backgroundColor: "white"}}>{data.role}</span>}
                                         : {data.message}
                                 </div>
@@ -320,8 +341,8 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                 <div className="normanHouseA" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill /></div>
                                 :
                               role === 'NormanB' ?
-                                <div className="normanHouseB" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill /></div>
-                                :
+                              <div className="normanHouseB" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill /></div>
+                              :
                                 <div className="normanHouseC" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill/></div>
                             }    
                             <div className="route1_tooltip">
@@ -361,6 +382,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                 <p>Depth Estimate in 3 Hours: <span>{data.round1[2]["Depth Estimate in 3 Hours"]} cm</span></p>
                                 <p>Electricity: <span>ON</span>{ }</p>
                             </div>
+
                         </div>
                         {
                             normanQuestion ? 
@@ -379,6 +401,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                         }
                     </div>
                     <div className="gameProgressBlock">
+
                         <ProgressBar now={normanHealth} style={{ fontSize: "1.1rem", height: "27px", borderRadius: "5px 5px 0 0"}} variant="primary" label={`Score: ${normanHealth} of 100`} />
                         <div className="heartNorman"><HeartFill size={23} color="red" /></div>                    
                         <div className="titleCoverupNorman"></div>
@@ -398,22 +421,22 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                     <div className="incomingEricaMessage">
                                         <div className="message_erica"><h5>Message from Erica </h5> <h6> Emergency Manager</h6> </div>
                                     </div>
-                                    {/* <div className="chatContent">
-                                        {chatData.map((data, i) => (
+                                    <div className="chatContent">
+                                        {chatData[round] && chatData[round].map((data, i) => (
                                             <div key={i}>
-                                                {data.role === "You" ? <span style={{ color: 'red', minWidth: "200px", backgroundColor: "darkGray" }}>{data.role}</span> : <span style={{ color: 'green', minWidth: "200px", backgroundColor: "lightpink" }}>{data.role}</span>}
-                                                : {data.message}
+                                            {data.role === "You" ? <span style={{ color: 'red', minWidth: "200px", backgroundColor: "darkGray" }}>{data.role}</span> : <span style={{ color: 'green', minWidth: "200px", backgroundColor: "lightpink" }}>{data.role}</span>}
+                                            : {data.message}
                                             </div>
-                                        ))}
-                                    </div>
-                                    <div className="chatInputContainer">
-                                        <form onSubmit={handleChatSubmit}>
+                                            ))}
+                                            </div>
+                                            <div className="chatInputContainer">
+                                            <form onSubmit={handleChatSubmit}>
                                             <div className="inputBox">
-                                                <input type="text" value={chat} onChange={handleChatChange} />
-                                                <button type="submit">Send</button>
+                                            <input type="text" value={chat} onChange={handleChatChange} />
+                                            <button type="submit">Send</button>
                                             </div>
-                                        </form>
-                                    </div> */}
+                                            </form>
+                                        </div>
                                     <div className="alertMessage">
                                         <p className="">
                                             {messageFromErica.toNorman}

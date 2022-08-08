@@ -41,46 +41,55 @@ import { proxy, useSnapshot } from "valtio";
 import valtioState  from '../../valtio/valtioState';
 
 
-const doc = new Y.Doc();
 
-let wsProvider;
-
-if (process.env.NODE_ENV === 'production') {
-    wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
-} else {
-    wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
-}
-
-
-wsProvider.on('status', e => {
-    console.log("status: ", doc);
-})
-
-const yarray = doc.get('array', Y.Array);
-
-const ymap = doc.get('map', Y.Map);
-
-wsProvider.on('synced', synced => {
-    console.log('Sync: ', synced);
-})
-
-yarray.observeDeep(()=> {
-    console.log('Observed array: ', yarray.toJSON());
-})
-
-ymap.observeDeep(() => {
-    console.log('Observed map: ', ymap.toJSON());
-})
-
-window.example = { wsProvider, doc, yarray }
-
-yarray.insert(0, ['test ', 'yes ', 'lets do this '])
-
-ymap.set('dance', 'crazy')
 
 export default function GrandGame() {
 
     const snap = useSnapshot(valtioState);
+    let wsProvider;
+
+    const doc = new Y.Doc();
+
+    const yarray = doc.get('array', Y.Array);
+
+    const ymap = doc.get('map', Y.Map);
+  
+    useEffect(()=> {
+
+
+        if (process.env.NODE_ENV === 'production') {
+            wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
+        } else {
+            wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
+        }
+
+
+        wsProvider.on('status', e => {
+            console.log("status: ", doc);
+        })
+
+
+        wsProvider.on('synced', synced => {
+            console.log('Sync: ', synced);
+        })
+
+        yarray.observeDeep(() => {
+            console.log('Observed array: ', yarray.toJSON());
+        })
+
+        ymap.observeDeep(() => {
+            console.log('Observed map: ', ymap.toJSON());
+        })
+
+        window.example = { wsProvider, doc, yarray }
+
+        ymap.set('dance', 'crazy')
+
+        console.log('snap: ', snap)
+        console.log('snap, ipAddress: ', snap.ipAddress_creator)
+
+    }, [])
+    
     
     const data = JSON.parse(JSON.stringify(original_data))
     
@@ -382,9 +391,9 @@ export default function GrandGame() {
 
     }, [normanDecisions, ericaDecisions, peteDecisions, globalGame, globalSession, setGlobalSession, setGlobalGame])
 
-    // useEffect(() => {
-    //     console.log("chatData: ", chatData)
-    // }, [chatData])
+    useEffect(() => {
+        // console.log("chatData: ", chatData)
+    }, [chatData])
 
 
 
@@ -560,7 +569,7 @@ export default function GrandGame() {
             setUserTaskDoneCounter(prev => prev + 1)
         }))
 
-        // chatData = { 1: [], 2: [], 3: [], 4: [] }
+   
         socket.on("norman_chat", (data) => {
             console.log('Norman is chatting on frontend received: ', data.message);
             console.log('chat data received: ', data)

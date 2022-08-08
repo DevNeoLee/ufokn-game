@@ -7,7 +7,7 @@ import { Button, Form } from "react-bootstrap";
 import { useTransition, useSpring, animated } from "react-spring";
 
 
-export default function PeteForm({ whichRoutePete, handleSubmitPete, petePower, setPopForm, handleChangePetePower, handleChangeWhichRoutePete}) {
+export default function PeteForm({ setPopForm, handlePeteForm, handleFormClose, whichRoutePete, handleSubmitPete, petePower, handleChangePetePower, handleChangeWhichRoutePete}) {
     const transition = useTransition(true, {
         from: { x: 500, y: 0, opacity: 0 },
         enter: { x: 0, y: 0, opacity: 1 },
@@ -21,10 +21,13 @@ export default function PeteForm({ whichRoutePete, handleSubmitPete, petePower, 
         }
     });
 
+    
+
     return (
         <div className="">
             {transition2((style, item) =>
                 <animated.div style={style} className="roleframe">
+                    <span onClick={handleFormClose} style={{ position: "absolute", top: "10px", right: "15px", fontSize: "1.5rem", cursor: "pointer" }}>X</span>
                     <p>
                         Now time to decide, You check flood risk information.
                         What is your decision? </p>

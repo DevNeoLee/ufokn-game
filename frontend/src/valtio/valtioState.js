@@ -2,7 +2,7 @@
 import { proxy } from "valtio";
 
 const valtioState = proxy({
-    ipAddress_creator: "",
+    ipAddress_creator: "a",
     game_begin: "",
     game_end: "",
     players: [],

@@ -13,7 +13,7 @@ import { Form, Button, ProgressBar } from "react-bootstrap";
 // import { useRecoilState } from 'recoil';
 // import { sessionState, gameState } from '../../recoil/globalState';
 
-export default function Instruction({ yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, handleRoleChange, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
+export default function Instruction({ snap, yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, handleRoleChange, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
 
   //main data
   // const [globalSession, setGlobalSession] = useRecoilState(sessionState);
@@ -159,6 +159,8 @@ export default function Instruction({ yarray, globalGame, setGlobalGame, globalS
     console.log('join clicked i: ')
     console.log('session: ', session)
     console.log('session', session)
+    console.log('global session: ', globalSession)
+
     let character = roles[game.players.length];
     if (!joined && session && game.players.length < MAX_CLIENTS) {
       setGame({...game, players: [...game.players, {...session, role: character}], room_name: 1});
@@ -207,8 +209,6 @@ export default function Instruction({ yarray, globalGame, setGlobalGame, globalS
             <animated.h2 style={style}>Instructions on How to Play </animated.h2>
           )}
         </div>
-      hello{yarray.toJSON()}
-      <p onClick={() => yarray.insert(0, ["들어가니?"])}>Check This</p>
         {canStartGame && 
           transition2((style, item) =>
               <animated.div style={style} className="canStartPopup">
