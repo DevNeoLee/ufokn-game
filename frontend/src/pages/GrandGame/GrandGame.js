@@ -46,7 +46,7 @@ const doc = new Y.Doc();
 let wsProvider;
 
 if (process.env.NODE_ENV === 'production') {
-    wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com/:1234', 'thisRoom', doc)
+    wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
 } else {
     wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
 }
