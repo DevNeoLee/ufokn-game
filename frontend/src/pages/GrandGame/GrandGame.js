@@ -236,31 +236,31 @@ export default function GrandGame() {
     }
         getInitialSession()
 
-        let tm;
-        function ping() {
-            wsProvider.send('__ping__');
-            tm = setTimeout(function () {
+        // let tm;
+        // function ping() {
+        //     wsProvider.send('__ping__');
+        //     tm = setTimeout(function () {
 
-                /// ---connection closed ///
+        //         /// ---connection closed ///
 
 
-            }, 5000);
-        }
+        //     }, 5000);
+        // }
 
-        function pong() {
-            clearTimeout(tm);
-        }
-        wsProvider.onopen = function () {
-            setInterval(ping, 30000);
-        }
-        wsProvider.onmessage = function (evt) {
-            var msg = evt.data;
-            if (msg == '__pong__') {
-                pong();
-                return;
-            }
-            //////-- other operation --//
-        }
+        // function pong() {
+        //     clearTimeout(tm);
+        // }
+        // wsProvider.onopen = function () {
+        //     setInterval(ping, 30000);
+        // }
+        // wsProvider.onmessage = function (evt) {
+        //     var msg = evt.data;
+        //     if (msg == '__pong__') {
+        //         pong();
+        //         return;
+        //     }
+        //     //////-- other operation --//
+        // }
     }, [])
 
     useEffect(() => {

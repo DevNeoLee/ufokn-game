@@ -208,6 +208,7 @@ export default function Instruction({ yarray, globalGame, setGlobalGame, globalS
           )}
         </div>
       hello{yarray.toJSON()}
+      <p onClick={() => yarray.insert(0, ["들어가니?"])}>Check This</p>
         {canStartGame && 
           transition2((style, item) =>
               <animated.div style={style} className="canStartPopup">
