@@ -7,10 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "server": "nodemon app.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend && \"PORT=1234 npx y-websocket \"",
     "frontend-install": "npm install --prefix frontend",
-    "frontend": "concurrently \"npm start --prefix frontend \" \"PORT=1234 npx y-websocket \"",
-    "dev": "concurrently \"npm run server\" \"npm run frontend\""
+    "frontend": "npm start --prefix frontend && npm start y-websocket",
+    "dev": "concurrently \"npm run server\" \"npm run frontend\" \"PORT=1234 npx y-websocket \""
   },
   "keywords": [],
   "author": "",
