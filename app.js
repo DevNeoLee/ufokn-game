@@ -139,9 +139,11 @@ io.on("connection", socket => {
     })
 
 
-    socket.on("role", (role) => {
+    socket.on("role", ({role, id}) => {
         console.log("socket.role: ", role)
+        console.log("socket.id: ", id)
         socket.role = role
+        io.in('1').emit('role', {role, id})
         console.log("socket.role: ", socket.role)
     })
 

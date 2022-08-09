@@ -86,10 +86,9 @@ export default function GrandGame() {
         ymap.set('dance', 'crazy')
 
         console.log('snap: ', snap)
-        console.log('snap, ipAddress: ', snap.ipAddress_creator)
-
+        console.log('snap, ipAddress: ', snap.game_creator_ipaddress)
+        valtioState.players.push({name: 'dave', hobby: "dance"})
     }, [])
-    
     
     const data = JSON.parse(JSON.stringify(original_data))
     
@@ -335,6 +334,11 @@ export default function GrandGame() {
 
     }, [])
 
+    useEffect( async () => {
+        console.log('Role has been assigned to: ', role)
+        await socket.emit('game_start', "1")
+    }, [role])
+
 
     
 /////////////////////////////////////////////////////////                   Round Complete Decision Logic                                 ///////////////////////////////////////////////////////////////////////////////////
@@ -395,9 +399,6 @@ export default function GrandGame() {
         // console.log("chatData: ", chatData)
     }, [chatData])
 
-
-
-
     ///////////////////////////////////create a session//////
     const createSession = async () => {
         return await fetch(HOST + '/api/session', { "method": "POST" })
@@ -416,8 +417,6 @@ export default function GrandGame() {
         if (room_size >= MIN_CLIENTS) {
             setCanStartGame(true);
         }
-
-
     }
 
     const updateToMongoDBSession = async (payload) => {
@@ -452,10 +451,8 @@ export default function GrandGame() {
 
     //먼저 소켓 접속
     const connectToSocket = () => {
-        //////Socket///////////////////////////////////////////////////////////////////
         const socket = io()
         setSocket(socket)
-        // console.log("socket connected: ", socket)
 
         socket.on("client_count", (arg1, arg2) => {
             // console.log('Client Count:', arg2)
@@ -487,17 +484,17 @@ export default function GrandGame() {
             setGlobalGame(data);
         })
 
-        socket.on('session_mongo_all', async () => {
-            console.log('session data testing....');
-            // console.log('globalSession: ', globalSession)
-            // console.log('session: ', session)
-            // console.log('globalGame._id: ', globalGame._id)
-            // await updateSessionToMongoDB()
-        })
-
+        let roleSelected;
         socket.on("game_start", () => {
             const gameOn = async () => {
                 //update sessionData in MongoDB
+
+                // if (valtioState.players) {
+                //     roleSelected = valtioState.players.find((player) => {
+                //         returnplayer._id === session._id;
+                //     })
+                    console.log('roleSelected: ', roleSelected)
+                // }
                 setGameStart(true)
                 // await updateToMongoDBSession({role: role})
                 console.log("Game Start Go!")
@@ -578,6 +575,16 @@ export default function GrandGame() {
 
             setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: data}}))
             console.log("chatData Updated: ", data)
+        })
+
+         socket.on("role", ({ role, id }) => {
+            // console.log('globalSession._id: ', globalSession._id)
+            // console.log('id: ', id)
+            //  if (session._id === id && role ){
+            //      setRole(role)
+            //      console.log("socket.role: ", role, id)
+            // }
+            console.log("socketRole: ", role)
         })
     }
 
@@ -773,49 +780,7 @@ export default function GrandGame() {
     }
 
 
-    const giveRoleRandomly = () => {
-        console.log('***************giveRoleRandomly clicked!**********')
 
-        setRole(role => ['Erica', 'Pete', 'NormanA', 'NormanB', 'NormanC'][Math.floor(Math.random()*3)])
-        // setRole(role => '')
-
-        // socket.emit("role")
-        // console.log('someone joined a room', typeof role)
-        // /socket emit/////
-
-
-        socket.emit("enter_room", 'hello entering', () => {
-            console.log("you entered the room1")
-            
-        })
-
-        console.log('socket,,', socket)
-    }
-
-    const handleRoleChange = () => {
-        switch (role) {
-         case 'Erica':
-            setPageQuantity(quantity => 4)
-            console.log("current role: ", role)
-            socket.emit("role", {role: role})
-            break;
-        case 'Pete':
-            setPageQuantity(quantity => 4)
-            console.log("current role:  ", role)
-            socket.emit("role", { role: role })
-            break;
-        case 'NormanA':
-        case 'NormanB':
-        case 'NormanC':
-            setPageQuantity(quantity => 6)
-            console.log("current role: ", role)
-            socket.emit("role", { role: role })
-            break;
-        default:
-            setPageQuantity(quantity => 0)
-            console.log("current role: none", role)
-        }
-    }
 
      // peteDecisions = {stay: null, whichRoute: null } 
     // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
@@ -854,9 +819,6 @@ export default function GrandGame() {
         console.log('which route pete: ', e.target.value)
 
     }
-
-    // peteDecisions ={stay: null, whichRoute: null } 
-    // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
 
     //Norman handles
     const handleSubmitNorman = async (e) => {
@@ -1011,6 +973,12 @@ export default function GrandGame() {
         </section>
     );
 
+    let roleSelected;
+    
+    // if (valtioState.players ){
+    //     roleSelected = 'Erica'
+    // }
+
     return (
         <div className="main">
             <div className="gameframe">
@@ -1018,23 +986,24 @@ export default function GrandGame() {
             { gameStart ?
                 <>
                     { 
-                        role === 'Erica' && resultReady
+    
+                        roleSelected === 'Erica' && resultReady
                             ? 
                             ericas[3] 
                             :
-                        role === 'Erica'
+                        roleSelected === 'Erica'
                             ?
                             ericas[step] 
                             : 
-                        role === 'Pete' && resultReady
+                        roleSelected === 'Pete' && resultReady
                             ? 
                             petes[3] 
                             :
-                        role === 'Pete'
+                        roleSelected === 'Pete'
                             ?
                             petes[step] 
                             : 
-                        normanRoles.includes(role) && resultReady
+                        normanRoles.includes(roleSelected) && resultReady
                             ?
                             normans[3] 
                             :
@@ -1044,7 +1013,7 @@ export default function GrandGame() {
                     { step !== 2 && <Buttons/> }
                 </>
                     : 
-                    <Instruction yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} handleRoleChange={handleRoleChange} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} giveRoleRandomly={giveRoleRandomly} session={session} setRole={setRole} role={role} normans={normanRoles} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} />
+                    <Instruction Buttons={Buttons} normanRoles={normanRoles} step={step} normans={normans} petes={petes} ericas={ericas} yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} session={session} setRole={setRole} role={role} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} resultReady={resultReady}/>
                 } 
             </div>
         </div>

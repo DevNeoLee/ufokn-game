@@ -10,10 +10,18 @@ import { useTransition, useSpring, animated } from "react-spring";
 
 import { Form, Button, ProgressBar } from "react-bootstrap";
 
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+
+import { bindProxyAndYMap } from "valtio-yjs";
+import { proxy, useSnapshot } from "valtio";
+
+import valtioState from '../../valtio/valtioState';
+
 // import { useRecoilState } from 'recoil';
 // import { sessionState, gameState } from '../../recoil/globalState';
 
-export default function Instruction({ snap, yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, handleRoleChange, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
+export default function Instruction({ snap, yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
 
   //main data
   // const [globalSession, setGlobalSession] = useRecoilState(sessionState);
@@ -35,7 +43,12 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
   });
 
 
+
   const [joined, setJoined] = useState(false);
+
+  useEffect(()=> {
+    console.log('valtioState updated: ', valtioState)
+  }, [valtioState])
 
   //make new game
   const createGame = async () => {
@@ -50,6 +63,7 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
       .then(data => {
         //We sessionStorage Game,
         sessionStorage.setItem('ufoknGame', JSON.stringify(data));
+
         console.log('New Game created, saved in SessionStorage on GrandGame page:', data)
 
         return data
@@ -89,15 +103,29 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     ////////////////////////여기서 전체에 게임 내용을 쉐어하고 각각 페이지에서 받은 공통 globalGame 내용을 update해줌
     await socket.emit('game_update', gameResponse, "1")////////////////
 
+    let listRoles = roles.slice(0, gameResponse.players.length);
+    console.log('listRoles: ', listRoles)
     //update sessionData in MongoDB 게임안에 있는 모든 사용자들의 세션을 압데 합니다.
+    let r;
     gameResponse.players.map(async (player) => {
       //각각 플레이어 마다 몽고데이터 세션을 압데 합니다. 
-  
+     
+      // r = listRoles[Math.floor(Math.random()*listRoles.length)]
+      // console.log('randomly seletected role: ', r)
+      // // setSession({...session, role: r})
+      // setGlobalSession({...session, role: r})
+      // valtioState.players.push({ ...session, role: r })
+      // console.log('players from valtio: ', valtioState.players)
+      // setGame({ ...game, players: [...game.players, { ...session, role: r }], room_name: 1 });
+      // socket.emit("role", { role: r, id: player._id })
+      // // setRole(r)
+      // let index =listRoles.indexOf(r)
+      // listRoles.splice(index, 1)
+
       await updateToMongoDBSession({...player, game_id: gameResponse._id})
     })
     
     await socket.emit('game_start', "1")
-    // handleRoleChange()
 
   }
 
@@ -161,14 +189,13 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     console.log('session', session)
     console.log('global session: ', globalSession)
 
-    let character = roles[game.players.length];
     if (!joined && session && game.players.length < MAX_CLIENTS) {
-      setGame({...game, players: [...game.players, {...session, role: character}], room_name: 1});
+      setGame({...game, players: [...game.players, {...session}], room_name: 1});
       console.log('************************', session)
 
       //we make globalGame, update globalSession here
       if (sessionDataObject) {
-        sessionDataObject.role = character;
+        // sessionDataObject.role = character;
 
         //////////////롤 캐릭터 정보를 세션에 추가 해서 글로벌세션에 저장
         setGlobalSession({...sessionDataObject})
@@ -176,7 +203,7 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
         sessionStorage.setItem('ufoknSession', JSON.stringify({ ...sessionDataObject }))
       }
 
-      setRole(character)
+     
       setJoined(true);
 
       //update sessionStorage
@@ -193,7 +220,7 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     }
 
      ////////////////////////여기서 전체에 게임 내용을 쉐어하고 각각 페이지에서 받은 공통 globalGame 내용을 update해줌
-    socket.emit('join_room', "1", { ...game, players: [...game.players, { ...session, role: character }], room_name: "1" }, session._id)////////////////
+    socket.emit('join_room', "1", { ...game, players: [...game.players, { ...session}], room_name: "1" }, session._id)////////////////
   }
 
   return (
