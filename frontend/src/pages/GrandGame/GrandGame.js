@@ -342,44 +342,23 @@ export default function GrandGame() {
                 setGame(game)
                 setGames([...games, game])
                 console.log('game: ', game)
-                // console.log('games: ', games)
                 console.log('room_size: ', room_size)
                 checkGameStart(room_size)
     
                 setRoomOneSize(room_size)
             })
-            // socket.on('share_game', (data) => {
-            //     console.log("received data from socket: ", data)
-            //     setGlobalGame(data);
-            // })
     
             //매번 글로벌게임 압데이트를 모든 참여 유저데이타에 해줌
             socket.on("game_update", (data) => {
                 setGlobalGame(data);
             })
     
-            let roleSelected;
             socket.on("game_start", () => {
                 const gameOn = async () => {
-                    //update sessionData in MongoDB
-    
-                    // if (valtioState.players) {
-                    //     roleSelected = valtioState.players.find((player) => {
-                    //         returnplayer._id === session._id;
-                    //     })
-                    console.log('roleSelected: ', roleSelected)
-                    // }
+
                     setGameStart(true)
-                    // await updateToMongoDBSession({role: role})
-                    console.log("Game Start Go!")
                 }
                 gameOn();
-            })
-    
-            socket.on("share_game", game_data => {
-                console.log('game_data: ', game_data)
-                // setGame(game_data)
-                // setGames([...games, game_data]);
             })
     
             socket.onAny((event, ...args) => {
@@ -473,8 +452,6 @@ export default function GrandGame() {
         }
     }, [role])
 
-
-    
 /////////////////////////////////////////////////////////                   Round Complete Decision Logic                                 ///////////////////////////////////////////////////////////////////////////////////
     // peteDecisions =[stay: null, whichRoute: null }] 
     // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
