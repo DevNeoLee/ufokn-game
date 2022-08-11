@@ -952,7 +952,6 @@ export default function GrandGame() {
             { gameStart ?
                 <>
                     { 
-    
                         role === 'Erica' && resultReady
                             ? 
                             ericas[3] 

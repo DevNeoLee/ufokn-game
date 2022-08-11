@@ -122,7 +122,7 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
       let index =listRoles.indexOf(r)
       listRoles.splice(index, 1)
 
-      await updateToMongoDBSession({...player, game_id: gameResponse._id})
+      await updateToMongoDBSession({...player,role: r, game_id: gameResponse._id})
     })
     
     await socket.emit('game_start', "1")
