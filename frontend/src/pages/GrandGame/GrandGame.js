@@ -40,9 +40,6 @@ import { proxy, useSnapshot } from "valtio";
 
 import valtioState  from '../../valtio/valtioState';
 
-
-
-
 export default function GrandGame() {
 
     const snap = useSnapshot(valtioState);
@@ -228,18 +225,17 @@ export default function GrandGame() {
 
     useEffect(() => {
         const getInitialSession = async () => {
-            console.log('GrandGame page begins!')
+
         let s = await sessionStorage.getItem('ufoknSession')
-        console.log("s??: ", s)
+        console.log("ufoknSession: ", s)
         if (!s ) {
-            console.log('세션이 없네')
+            console.log('No ufoknSession yet')
             s = await createSession()
 
             setSession(s)
             setGlobalSession(s)
 
         } else {
-            console.log("Your Global Session: ", globalSession)
             setSession(JSON.parse(s))
             setGlobalSession(JSON.parse(s))
         }
@@ -275,13 +271,13 @@ export default function GrandGame() {
 
     useEffect(() => {
         sessionStorage.setItem('ufoknSession', JSON.stringify(globalSession))
-        console.log('Your global session data in userEffect[session]; ', globalSession)
+        console.log('Global Session from userEffect[glbalSession]; ', globalSession)
    
     }, [globalSession])
 
     useEffect(()=> {
         sessionStorage.setItem('ufoknGame', JSON.stringify(globalGame))
-        console.log('globalGame: ', globalGame)
+        console.log('Global Game from userEffect[glbalGame]; ', globalGame)
 
     }, [globalGame])
 
@@ -307,12 +303,12 @@ export default function GrandGame() {
 
 
     useEffect(() => {
-        console.log("ericaMessage to norman:", messageToNorman)
+        // console.log("ericaMessage to norman:", messageToNorman)
 
     }, [messageToNorman])
 
     useEffect(() => {
-        console.log("ericaMessage to pete:", messageToPete)
+        // console.log("ericaMessage to pete:", messageToPete)
 
     }, [messageToPete])
 
@@ -374,28 +370,20 @@ export default function GrandGame() {
             })
     
             socket.on("erica_message", (msg) => {
-                console.log('Erica message from Erica received: ', msg)
-                console.log('aaa')
+                // console.log('Erica message from Erica received: ', msg)
                 setMessageFromErica(msg)
-                console.log('bbb')
                 setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
-    
-    
-    
-                console.log('ccc')
                 setUserTaskDoneCounter(prev => prev + 1)
-                console.log('ddd')
                 setTimeout(() => {
                     setPopForm(true)
                     setWaitPopupErica(true)
                 }, 3000);
-                console.log('eee')
     
             })
     
             // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
             socket.on("norman_message", (data => {
-                console.log('Norman data from Norman received: ', data)
+                // console.log('Norman data from Norman received: ', data)
     
                 // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
                 // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
@@ -407,7 +395,7 @@ export default function GrandGame() {
             }))
     
             socket.on("pete_message", (data => {
-                console.log('Pete data from Pete received: ', data)
+                // console.log('Pete data from Pete received: ', data)
     
                 if (data.stay === 'poweroff') {
                     setElectricity('poweroff')
@@ -421,23 +409,24 @@ export default function GrandGame() {
     
     
             socket.on("norman_chat", (data) => {
-                console.log('Norman is chatting on frontend received: ', data.message);
-                console.log('chat data received: ', data)
+                // console.log('Norman is chatting on frontend received: ', data.message);
+                // console.log('chat data received: ', data)
     
                 setChatData(prev => ({ ...prev, [round]: [...prev[round], data] }));
     
                 setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: data } }))
-                console.log("chatData Updated: ", data)
+                // console.log("chatData Updated: ", data)
             })
     
             socket.on("role", ({ role, id }) => {
                 const sessionS = JSON.parse(sessionStorage.getItem('ufoknSession'));
-                console.log('sessionS._id: ', sessionS._id)
-                console.log('id: ', id)
+                // console.log('sessionS._id: ', sessionS._id)
+                // console.log('id: ', id)
 
                  if (sessionS._id === id && role ){
-                     setRole(role)
-                     console.log("socketRole: ", role, id)
+                    setSession(session => { return { ...session, role: role } })
+                    setGlobalSession(session => { return { ...session, role: role } })
+                    setRole(role)
                 }
             })
         
@@ -446,7 +435,7 @@ export default function GrandGame() {
     }, [socket])
 
     useEffect( async () => {
-        console.log('Role has been assigned to: ', role)
+        // console.log('Role has been assigned to: ', role)
         if (socket) {
             await socket.emit('game_start', "1")
         }
@@ -517,7 +506,7 @@ export default function GrandGame() {
             .then(data => {
 
                 sessionStorage.setItem('ufoknSession', JSON.stringify(data));
-                console.log('New Session created, saved in SessionStorage on GrandGame page:', data)
+                console.log('New Session created in mongoDB, saved in SessionStorage on GrandGame page:', data)
                 return data
             })
             .catch(err => console.log(err))
@@ -605,7 +594,6 @@ export default function GrandGame() {
             data[`round${round + 1}`].map(ele => {
                 if (ele.name.toLowerCase() === decidedAreaNorman.toLowerCase()) {
                     setWaterDepthEndupNorman(ele['Current Water Depth'])
-                    console.log('자료 안입니다.')
                 }
             })
 
@@ -631,9 +619,6 @@ export default function GrandGame() {
             travelRisk = 5;
 
             powerOutrageRisk = 0;
-
-            console.log("decidedAreaNorman: ", decidedAreaNorman)
-
 
             data[`round${round + 1}`].map(ele => {
                 if (ele.name.toLowerCase() === decidedAreaNorman) {
@@ -684,12 +669,11 @@ export default function GrandGame() {
             //다음 라운드의 current wtaer depth 값임
             data[`round${round + 1}`].map(ele => {
 
-                console.log("ele.name.toLowerCase(): ", ele.name.toLowerCase())
-                console.log(" decidedAreaPete.toLowerCase(): ", decidedAreaPete.toLowerCase())
+                // console.log("ele.name.toLowerCase(): ", ele.name.toLowerCase())
+                // console.log(" decidedAreaPete.toLowerCase(): ", decidedAreaPete.toLowerCase())
 
                 if (ele.name.toLowerCase() === decidedAreaPete.toLowerCase()) {
                     setWaterDepthEndupPete(ele['Current Water Depth'])
-                    console.log('자료 안입니다.ele["Current Water Depth"]: ', ele['Current Water Depth'])
                 }
             })
 
@@ -716,13 +700,11 @@ export default function GrandGame() {
 
             powerOutrageRisk = 0;
 
-            console.log("decidedAreaPete: ", decidedAreaPete)
-            console.log('일로 왓나요?')
+            // console.log("decidedAreaPete: ", decidedAreaPete)
 
             data[`round${round + 1}`].map(ele => {
                 if (ele.name.toLowerCase() === decidedAreaPete.toLowerCase()) {
                     setWaterDepthEndupPete(ele['Current Water Depth'])
-                    console.log("water level pete: ", )
                 }
             })
 
@@ -948,7 +930,6 @@ export default function GrandGame() {
     return (
         <div className="main">
             <div className="gameframe">
-                {/* {ericas[3]} */}
             { gameStart ?
                 <>
                     { 

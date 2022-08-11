@@ -42,17 +42,10 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     }
   });
 
-
-
   const [joined, setJoined] = useState(false);
-
-  useEffect(()=> {
-    console.log('valtioState updated: ', valtioState)
-  }, [valtioState])
 
   //make new game
   const createGame = async () => {
-    console.log('globalGame when the game Hello World: ', globalGame)
     const gameData = await fetch(HOST + '/api/grandgame', {
       "method": "POST", 
       "headers": {
@@ -63,8 +56,6 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
       .then(data => {
         //We sessionStorage Game,
         sessionStorage.setItem('ufoknGame', JSON.stringify(data));
-
-        console.log('New Game created, saved in SessionStorage on GrandGame page:', data)
 
         return data
       })
@@ -87,7 +78,7 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
 
     //////////////////////////We create game here with the global Game object made
     const gameResponse = await createGame();
-    console.log('gameResponse: ', gameResponse)
+    console.log('Game Created: ', gameResponse)
 
 
     ///////We sessionStorage Game with added your Game ID info
@@ -111,13 +102,18 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
       //각각 플레이어 마다 몽고데이터 세션을 압데 합니다. 
      
       r = listRoles[Math.floor(Math.random()*listRoles.length)]
-      console.log('randomly seletected role: ', r)
-      // setSession({...session, role: r})
-      setGlobalSession({...session, role: r})
-      valtioState.players.push({ ...session, role: r })
-      console.log('players from valtio: ', valtioState.players)
-      setGame({ ...game, players: [...game.players, { ...session, role: r }], room_name: 1 });
+      console.log('randomly seletected role: ' + r + ' for ' + player._id)
+      // setSession(session => { return { ...session, role: r } })
+
+      // if (player._id === globalSession._id) {
+      //   setGlobalSession(session => { return {...session, role: r}})
+      // }
+
+      setGame(game => {return { ...game, players: [...game.players, { ...game.session, role: r }], room_name: 1 }});
       socket.emit("role", { role: r, id: player._id })
+      
+      valtioState.players.push({ ...player, role: r })
+      console.log('players from valtio: ', valtioState.players)
 
       let index =listRoles.indexOf(r)
       listRoles.splice(index, 1)
