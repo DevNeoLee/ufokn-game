@@ -110,17 +110,17 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     gameResponse.players.map(async (player) => {
       //각각 플레이어 마다 몽고데이터 세션을 압데 합니다. 
      
-      // r = listRoles[Math.floor(Math.random()*listRoles.length)]
-      // console.log('randomly seletected role: ', r)
-      // // setSession({...session, role: r})
-      // setGlobalSession({...session, role: r})
-      // valtioState.players.push({ ...session, role: r })
-      // console.log('players from valtio: ', valtioState.players)
-      // setGame({ ...game, players: [...game.players, { ...session, role: r }], room_name: 1 });
-      // socket.emit("role", { role: r, id: player._id })
-      // // setRole(r)
-      // let index =listRoles.indexOf(r)
-      // listRoles.splice(index, 1)
+      r = listRoles[Math.floor(Math.random()*listRoles.length)]
+      console.log('randomly seletected role: ', r)
+      // setSession({...session, role: r})
+      setGlobalSession({...session, role: r})
+      valtioState.players.push({ ...session, role: r })
+      console.log('players from valtio: ', valtioState.players)
+      setGame({ ...game, players: [...game.players, { ...session, role: r }], room_name: 1 });
+      socket.emit("role", { role: r, id: player._id })
+
+      let index =listRoles.indexOf(r)
+      listRoles.splice(index, 1)
 
       await updateToMongoDBSession({...player, game_id: gameResponse._id})
     })

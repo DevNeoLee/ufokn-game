@@ -55,39 +55,30 @@ export default function GrandGame() {
     const ymap = doc.get('map', Y.Map);
   
     useEffect(()=> {
-
-
         if (process.env.NODE_ENV === 'production') {
             wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
         } else {
             wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
         }
 
-
         wsProvider.on('status', e => {
-            console.log("status: ", doc);
+            // console.log("status: ", doc);
         })
 
-
         wsProvider.on('synced', synced => {
-            console.log('Sync: ', synced);
+            // console.log('Sync: ', synced);
         })
 
         yarray.observeDeep(() => {
-            console.log('Observed array: ', yarray.toJSON());
+            // console.log('Observed array: ', yarray.toJSON());
         })
 
         ymap.observeDeep(() => {
-            console.log('Observed map: ', ymap.toJSON());
+            // console.log('Observed map: ', ymap.toJSON());
         })
 
         window.example = { wsProvider, doc, yarray }
 
-        ymap.set('dance', 'crazy')
-
-        console.log('snap: ', snap)
-        console.log('snap, ipAddress: ', snap.game_creator_ipaddress)
-        valtioState.players.push({name: 'dave', hobby: "dance"})
     }, [])
     
     const data = JSON.parse(JSON.stringify(original_data))
@@ -225,6 +216,17 @@ export default function GrandGame() {
     ])
 
     useEffect(() => {
+        const socket = io()
+        setSocket(socket)
+        console.log("================= socket open ===========")
+        return () => {
+            setSocket(null);
+            console.log("================= socket close ===========")
+        }
+
+    }, [])
+
+    useEffect(() => {
         const getInitialSession = async () => {
             console.log('GrandGame page begins!')
         let s = await sessionStorage.getItem('ufoknSession')
@@ -326,17 +328,149 @@ export default function GrandGame() {
     }, [electricity])
    
     useEffect(()=>{
-        connectToSocket()
+        if (socket) {
+            socket.on("client_count", (arg1, arg2) => {
+                // console.log('Client Count:', arg2)
+                setClients(arg2);
+            })
+
+            socket.on("join_room", (room_name, player_name, game, room_size) => {
+                console.log(`New player joined a room #${room_name}: `, game, player_name)
+                //위의 스텝은 아마 거의 필요없어 집니다, 글로벌 사용하니까요.
+                setGlobalGame(game);
+                sessionStorage.setItem('ufoknGame', game);
+                setGame(game)
+                setGames([...games, game])
+                console.log('game: ', game)
+                // console.log('games: ', games)
+                console.log('room_size: ', room_size)
+                checkGameStart(room_size)
+    
+                setRoomOneSize(room_size)
+            })
+            // socket.on('share_game', (data) => {
+            //     console.log("received data from socket: ", data)
+            //     setGlobalGame(data);
+            // })
+    
+            //매번 글로벌게임 압데이트를 모든 참여 유저데이타에 해줌
+            socket.on("game_update", (data) => {
+                setGlobalGame(data);
+            })
+    
+            let roleSelected;
+            socket.on("game_start", () => {
+                const gameOn = async () => {
+                    //update sessionData in MongoDB
+    
+                    // if (valtioState.players) {
+                    //     roleSelected = valtioState.players.find((player) => {
+                    //         returnplayer._id === session._id;
+                    //     })
+                    console.log('roleSelected: ', roleSelected)
+                    // }
+                    setGameStart(true)
+                    // await updateToMongoDBSession({role: role})
+                    console.log("Game Start Go!")
+                }
+                gameOn();
+            })
+    
+            socket.on("share_game", game_data => {
+                console.log('game_data: ', game_data)
+                // setGame(game_data)
+                // setGames([...games, game_data]);
+            })
+    
+            socket.onAny((event, ...args) => {
+                // console.log('socket event: ', event, args)
+            })
+    
+            socket.on("leaving", () => {
+                // console.log("someone leaving the room")
+            })
+    
+            socket.on("left", () => {
+                // console.log("someone left the room")
+            })
+    
+            socket.on("erica_message", (msg) => {
+                console.log('Erica message from Erica received: ', msg)
+                console.log('aaa')
+                setMessageFromErica(msg)
+                console.log('bbb')
+                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
+    
+    
+    
+                console.log('ccc')
+                setUserTaskDoneCounter(prev => prev + 1)
+                console.log('ddd')
+                setTimeout(() => {
+                    setPopForm(true)
+                    setWaitPopupErica(true)
+                }, 3000);
+                console.log('eee')
+    
+            })
+    
+            // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
+            socket.on("norman_message", (data => {
+                console.log('Norman data from Norman received: ', data)
+    
+                // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
+                // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
+    
+                setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [round]: data } }))
+    
+    
+                setUserTaskDoneCounter(prev => prev + 1)
+            }))
+    
+            socket.on("pete_message", (data => {
+                console.log('Pete data from Pete received: ', data)
+    
+                if (data.stay === 'poweroff') {
+                    setElectricity('poweroff')
+                } else if (data.stay === 'poweron') {
+                    setElectricity('poweron')
+                }
+                setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
+    
+                setUserTaskDoneCounter(prev => prev + 1)
+            }))
+    
+    
+            socket.on("norman_chat", (data) => {
+                console.log('Norman is chatting on frontend received: ', data.message);
+                console.log('chat data received: ', data)
+    
+                setChatData(prev => ({ ...prev, [round]: [...prev[round], data] }));
+    
+                setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: data } }))
+                console.log("chatData Updated: ", data)
+            })
+    
+            socket.on("role", ({ role, id }) => {
+                const sessionS = JSON.parse(sessionStorage.getItem('ufoknSession'));
+                console.log('sessionS._id: ', sessionS._id)
+                console.log('id: ', id)
+
+                 if (sessionS._id === id && role ){
+                     setRole(role)
+                     console.log("socketRole: ", role, id)
+                }
+            })
         
-        return () => {
-            setSocket(null);
         }
 
-    }, [])
+    }, [socket])
 
     useEffect( async () => {
         console.log('Role has been assigned to: ', role)
-        await socket.emit('game_start', "1")
+        if (socket) {
+            await socket.emit('game_start', "1")
+        }
     }, [role])
 
 
@@ -447,145 +581,6 @@ export default function GrandGame() {
         }
 
         await dataUpdate();
-    }
-
-    //먼저 소켓 접속
-    const connectToSocket = () => {
-        const socket = io()
-        setSocket(socket)
-
-        socket.on("client_count", (arg1, arg2) => {
-            // console.log('Client Count:', arg2)
-            setClients(arg2);
-        })
-
-        socket.on("join_room", (room_name, player_name, game, room_size) => {
-            console.log(`New player joined a room #${room_name}: `, game, player_name)
-            //위의 스텝은 아마 거의 필요없어 집니다, 글로벌 사용하니까요.
-            setGlobalGame(game);
-            sessionStorage.setItem('ufoknGame', game);
-            setGame(game)
-            setGames([...games, game])
-            console.log('game: ', game)
-            // console.log('games: ', games)
-            console.log('room_size: ', room_size)
-            checkGameStart(room_size)
-
-            setRoomOneSize(room_size)
-        })
-
-        // socket.on('share_game', (data) => {
-        //     console.log("received data from socket: ", data)
-        //     setGlobalGame(data);
-        // })
-
-        //매번 글로벌게임 압데이트를 모든 참여 유저데이타에 해줌
-        socket.on("game_update", (data) => {
-            setGlobalGame(data);
-        })
-
-        let roleSelected;
-        socket.on("game_start", () => {
-            const gameOn = async () => {
-                //update sessionData in MongoDB
-
-                // if (valtioState.players) {
-                //     roleSelected = valtioState.players.find((player) => {
-                //         returnplayer._id === session._id;
-                //     })
-                    console.log('roleSelected: ', roleSelected)
-                // }
-                setGameStart(true)
-                // await updateToMongoDBSession({role: role})
-                console.log("Game Start Go!")
-            }
-            gameOn();
-        })
-
-        socket.on("share_game", game_data => {
-            console.log('game_data: ', game_data)
-            // setGame(game_data)
-            // setGames([...games, game_data]);
-        })
-
-        socket.onAny((event, ...args) => {
-            // console.log('socket event: ', event, args)
-        })
-
-        socket.on("leaving", () => {
-            // console.log("someone leaving the room")
-        })
-
-        socket.on("left", () => {
-            // console.log("someone left the room")
-        })
-
-        socket.on("erica_message", (msg) => {
-            console.log('Erica message from Erica received: ', msg)
-            console.log('aaa')
-            setMessageFromErica(msg)
-            console.log('bbb')
-            setGlobalGame(prev => ({...prev, erica_messages: {...prev.erica_messages, [round]: msg}}))
-     
-
-
-            console.log('ccc')
-            setUserTaskDoneCounter(prev => prev + 1)
-            console.log('ddd')
-            setTimeout(() => {
-                setPopForm(true)
-                setWaitPopupErica(true)
-            }, 3000);
-            console.log('eee')
-
-        })
-
-        // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
-        socket.on("norman_message", (data => {
-            console.log('Norman data from Norman received: ', data)
-
-            // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
-            // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
-
-            setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [round]: data} }))
-     
-
-            setUserTaskDoneCounter(prev => prev + 1)
-        }))
-
-        socket.on("pete_message", (data => {
-            console.log('Pete data from Pete received: ', data)
-
-            if (data.stay === 'poweroff') {
-                setElectricity('poweroff')
-            } else if (data.stay === 'poweron') {
-                setElectricity('poweron')
-            }
-            setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data} }))
-    
-            setUserTaskDoneCounter(prev => prev + 1)
-        }))
-
-   
-        socket.on("norman_chat", (data) => {
-            console.log('Norman is chatting on frontend received: ', data.message);
-            console.log('chat data received: ', data)
-
-            setChatData(prev => ({...prev, [round]: [...prev[round], data]}));
-
-            setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: data}}))
-            console.log("chatData Updated: ", data)
-        })
-
-         socket.on("role", ({ role, id }) => {
-            // console.log('globalSession._id: ', globalSession._id)
-            // console.log('id: ', id)
-            //  if (session._id === id && role ){
-            //      setRole(role)
-            //      console.log("socket.role: ", role, id)
-            // }
-            console.log("socketRole: ", role)
-        })
     }
 
     const calculateScore = (normanDecisions, peteDecisions) => {
@@ -973,12 +968,6 @@ export default function GrandGame() {
         </section>
     );
 
-    let roleSelected;
-    
-    // if (valtioState.players ){
-    //     roleSelected = 'Erica'
-    // }
-
     return (
         <div className="main">
             <div className="gameframe">
@@ -987,23 +976,23 @@ export default function GrandGame() {
                 <>
                     { 
     
-                        roleSelected === 'Erica' && resultReady
+                        role === 'Erica' && resultReady
                             ? 
                             ericas[3] 
                             :
-                        roleSelected === 'Erica'
+                        role === 'Erica'
                             ?
                             ericas[step] 
                             : 
-                        roleSelected === 'Pete' && resultReady
+                        role === 'Pete' && resultReady
                             ? 
                             petes[3] 
                             :
-                        roleSelected === 'Pete'
+                        role === 'Pete'
                             ?
                             petes[step] 
                             : 
-                        normanRoles.includes(roleSelected) && resultReady
+                        normanRoles.includes(role) && resultReady
                             ?
                             normans[3] 
                             :
