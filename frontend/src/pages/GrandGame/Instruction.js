@@ -21,7 +21,7 @@ import valtioState from '../../valtio/valtioState';
 // import { useRecoilState } from 'recoil';
 // import { sessionState, gameState } from '../../recoil/globalState';
 
-export default function Instruction({ snap, yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
+export default function Instruction({ updateToMongoDBGame, snap, yarray, globalGame, setGlobalGame, globalSession, setGlobalSession, clients, axios, HOST, sessionDataObject, setGameStart, id, setId, setCanStartGame, canStartGame ,game, setGame, socket, session, setSession, MAX_CLIENTS, MIN_CLIENTS, giveRoleRandomly, setRole, role, normans, userQuantity, games, setGames}) {
 
   //main data
   // const [globalSession, setGlobalSession] = useRecoilState(sessionState);
@@ -85,11 +85,11 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     sessionStorage.setItem('ufoknGame', JSON.stringify(gameResponse));
 
 
-    ///////We sessionStorage Session with added your Game ID info
-    sessionStorage.setItem('ufoknSession', JSON.stringify({...globalSession, game_id: gameResponse._id }));
+                ///////We sessionStorage Session with added your Game ID info
+                // sessionStorage.setItem('ufoknSession', JSON.stringify({...globalSession, game_id: gameResponse._id }));
 
-    ////////your Game ID 정보를 세션에 추가 해서 글로벌세션에 저장
-    setGlobalSession({ ...globalSession, game_id: gameResponse._id })
+                ////////your Game ID 정보를 세션에 추가 해서 글로벌세션에 저장
+                // setGlobalSession({ ...globalSession, game_id: gameResponse._id })
 
     ////////////////////////여기서 전체에 게임 내용을 쉐어하고 각각 페이지에서 받은 공통 globalGame 내용을 update해줌
     await socket.emit('game_update', gameResponse, "1")////////////////
@@ -98,28 +98,38 @@ export default function Instruction({ snap, yarray, globalGame, setGlobalGame, g
     console.log('listRoles: ', listRoles)
     //update sessionData in MongoDB 게임안에 있는 모든 사용자들의 세션을 압데 합니다.
     let r;
+
+    // yarray.delete(); ///
+    let ps = [];
     gameResponse.players.map(async (player) => {
       //각각 플레이어 마다 몽고데이터 세션을 압데 합니다. 
      
       r = listRoles[Math.floor(Math.random()*listRoles.length)]
       console.log('randomly seletected role: ' + r + ' for ' + player._id)
-      // setSession(session => { return { ...session, role: r } })
 
-      // if (player._id === globalSession._id) {
-      //   setGlobalSession(session => { return {...session, role: r}})
-      // }
-
-      setGame(game => {return { ...game, players: [...game.players, { ...game.session, role: r }], room_name: 1 }});
       socket.emit("role", { role: r, id: player._id })
       
-      valtioState.players.push({ ...player, role: r })
+      valtioState.players.push({ ...player, role: r, game_id: gameResponse._id })
+      ps.push({ ...player, role: r, game_id: gameResponse._id })
+      // yarray.push({...player, role: r, game_id: gameResponse._id })
+      // console.log('yarray: ', yarray)
       console.log('players from valtio: ', valtioState.players)
+      
+      setGame(game => {return { ...game, players: [...game.players, { ...game.session, ...player, role: r , game_id: gameResponse._id}], room_name: 1 }});
+  
 
       let index =listRoles.indexOf(r)
       listRoles.splice(index, 1)
 
       await updateToMongoDBSession({...player,role: r, game_id: gameResponse._id})
     })
+
+    console.log('game: 1', game)
+    console.log('ps: ', ps)
+
+    const updateWithPlayersInfoGame = await updateToMongoDBGame({ players: ps, _id: gameResponse._id})
+    
+    console.log('updateWithPlayersInfoGame: ', updateWithPlayersInfoGame)
     
     await socket.emit('game_start', "1")
 

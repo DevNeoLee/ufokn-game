@@ -346,6 +346,8 @@ export default function GrandGame() {
     
             //매번 글로벌게임 압데이트를 모든 참여 유저데이타에 해줌
             socket.on("game_update", (data) => {
+                console.log('game_update socket: ', data)
+                setGame(data)
                 setGlobalGame(data);
             })
     
@@ -959,7 +961,7 @@ export default function GrandGame() {
                     { step !== 2 && <Buttons/> }
                 </>
                     : 
-                    <Instruction Buttons={Buttons} normanRoles={normanRoles} step={step} normans={normans} petes={petes} ericas={ericas} yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} session={session} setRole={setRole} role={role} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} resultReady={resultReady}/>
+                    <Instruction updateToMongoDBGame={updateToMongoDBGame} Buttons={Buttons} normanRoles={normanRoles} step={step} normans={normans} petes={petes} ericas={ericas} yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} session={session} setRole={setRole} role={role} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} resultReady={resultReady}/>
                 } 
             </div>
         </div>
