@@ -3,8 +3,9 @@ const data = {
     "questions": [
         {
             "id": "1",
-            "question": "How mentally prepared do you think you are in making proper decisions during an imminent flood event?",
-            "choices": ["Cannot be prepared at all", "Might panic", "Prepared to some degree","Well prepared"]
+            
+            "question": "Have you ever been exposed to a flood event in your living area?",
+            "choices": ["Never", "Just rainfalls and normal runoffs", "Yes, but not extreme floods","Yes, extreme floods"]
         },
         {
             "id": "2",
@@ -30,7 +31,37 @@ const data = {
             "id": "6",
             "question": "Do you feel more safety and prepared with the real-time information being broadcasted to you and being able to communicate with your neighbors in future extreme flood events?",
             "choices": ["No", "Just a little bit", "Yes, to some degree", "Yes, significantly! "]
-        }
+        },
+        {
+            "id": "8",
+            "question": "How mentally prepared do you feel about facing an extreme flood event? (e.g.making proper decisions, controlling your panic and stress levels, etc.) ",
+            "choices": ["Unprepared", "Mostly unprepared", "Mostly prepared", "Well prepared"]
+        },
+        {
+            "id": "4",
+            "question": "How important do you think broadcasts from public institutions (e.g. emergency mangers) are in helping you make evacuation decisions?",
+            "choices": ["No importance", "Low importance", "Medium importance", "High importance"]
+        },
+        {
+            "id": "5",
+            "question": "How important do you think observation of your neighbors’ evacuation decisions is in helping you make evacuation decisions?",
+            "choices": ["No importance", "Low importance", "Medium importance", "High importance"]
+        },
+        {
+            "id": "6",
+            "question": "How important do you think social interaction with others in your area (e.g.communicating via social media or other chatting platform) is in helping you make evacuation decisions?",
+            "choices": ["No importance", "Low importance", "Medium importance", "High importance"]
+        },
+        {
+            "id": "7",
+            "question": "How important do you think estimated and actual flood depth information is in helping you make evacuation decisions(e.g.flood depth information on your neighborhood area and particular evacuation routes)?",
+            "choices": ["No importance", "Low importance", "Medium importance", "High importance"]
+        },
+        {
+            "id": "8",
+            "question": "Do you think that you made better decisions with the help of real- time information on flood risk ?",
+            "choices": ["No", "Yes, to some degree", "Yes, significantly", "I’m unsure"]
+        },
 
     ]
 };

@@ -173,16 +173,16 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
     const handleChatSubmit = (e) => {
         e.preventDefault();
 
-        const chatMessage = { role: role, message: chat, time: new Date() }
+        const chatMessage = { round: round, role: role, message: chat, time: new Date() }
         console.log('chat hoho1: ', chat)
 
         setChatData(prev => ({ ...prev, [round]: [...prev[round], chatMessage] }));
         console.log('chat hoho chatData: ', chatData)
 
-        // setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: [...prev.chatting.round, chatMessage] } }))
-        // console.log('chat hoho3, globalGame just changed: ', globalGame)
+        setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: [...prev.chatting[round], chatMessage] } }))
+        console.log('chatData globalGame just changed: ', globalGame)
 
-        socket.emit("norman_chat", (chatMessage))
+        socket.emit("norman_chat", chatMessage)
         setChat("")
     }
 
@@ -421,22 +421,6 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                     <div className="incomingEricaMessage">
                                         <div className="message_erica"><h5>Message from Erica </h5> <h6> Emergency Manager</h6> </div>
                                     </div>
-                                    <div className="chatContent">
-                                        {chatData[round] && chatData[round].map((data, i) => (
-                                            <div key={i}>
-                                            {data.role === "You" ? <span style={{ color: 'red', minWidth: "200px", backgroundColor: "darkGray" }}>{data.role}</span> : <span style={{ color: 'green', minWidth: "200px", backgroundColor: "lightpink" }}>{data.role}</span>}
-                                            : {data.message}
-                                            </div>
-                                            ))}
-                                            </div>
-                                            <div className="chatInputContainer">
-                                            <form onSubmit={handleChatSubmit}>
-                                            <div className="inputBox">
-                                            <input type="text" value={chat} onChange={handleChatChange} />
-                                            <button type="submit">Send</button>
-                                            </div>
-                                            </form>
-                                        </div>
                                     <div className="alertMessage">
                                         <p className="">
                                             {messageFromErica.toNorman}

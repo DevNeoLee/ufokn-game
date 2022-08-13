@@ -3,18 +3,23 @@ const data = {
     "questions": [
         {
             "id": "1",
-            "question": "Please define your age and gender",
-            "choices": ["Female, age 20-30", "Female, age 30-40", "Female, age 40-50", "Female, age 50-60", "Female, age 60+", "Male, age 20-30", "Male, age 30-40", "Male, age 40-50", "Male, age 50-60", "Male, age 60+", "Prefer Not to Answer"]
+            "question": "Please define your age",
+            "choices": ["20-29", "30-39", "40-49", "50-59", "60+"]
         },
         {
             "id": "2",
-            "question": "Indicate your economic status among the following qualitative categories",
-            "choices": ["Low income", "Middle income", "High income"]
+            "question": "Please define your gender",
+            "choices": ["Male", "Female", "Other", "Prefer not to specifiy"]
         },
         {
             "id": "3",
-            "question": "What type of ownership you have on your home? ",
-            "choices": ["joint tenancy", "tenancy in common", "tenant", "sole ownership"]
+            "question": "Which of the following economic categories do you consider yourself?",
+            "choices": ["Low income", "Middle income", "High income"]
+        },
+        {
+            "id": "4",
+            "question": "Which of the following statements best describes your living situation? ",
+            "choices": ["I own my place of residence and am the sole resident", "I own my place of residence and share the residence with one or more others", "I rent my place of residence and am the sole resident", "I rent my place of residence and share the residence with one or more others"]
         }
     ]
 };

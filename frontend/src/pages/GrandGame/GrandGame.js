@@ -412,11 +412,11 @@ export default function GrandGame() {
     
             socket.on("norman_chat", (data) => {
                 // console.log('Norman is chatting on frontend received: ', data.message);
-                // console.log('chat data received: ', data)
+                console.log('chat data received: ', data)
+                console.log('chat round received: ', data.round)
+                setChatData(prev => ({ ...prev, [data.round]: [...prev[data.round], data] }));
     
-                setChatData(prev => ({ ...prev, [round]: [...prev[round], data] }));
-    
-                setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: data } }))
+                setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [data.round]: [...prev.chatting[data.round], data] } }))
                 // console.log("chatData Updated: ", data)
             })
     
@@ -934,7 +934,7 @@ export default function GrandGame() {
             <div className="gameframe">
             { gameStart ?
                 <>
-                    { 
+                    {  role &&
                         role === 'Erica' && resultReady
                             ? 
                             ericas[3] 
