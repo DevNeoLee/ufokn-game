@@ -390,7 +390,7 @@ export default function GrandGame() {
                 // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
                 // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
     
-                setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [data.round]: data } }))
+                setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [data.round]: [...prev.norman_decisions[data.round], data] } }))
     
     
                 setUserTaskDoneCounter(prev => prev + 1)
