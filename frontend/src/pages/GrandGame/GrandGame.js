@@ -374,7 +374,7 @@ export default function GrandGame() {
             socket.on("erica_message", (msg) => {
                 // console.log('Erica message from Erica received: ', msg)
                 setMessageFromErica(msg)
-                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
+                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: msg } }))
                 setUserTaskDoneCounter(prev => prev + 1)
                 setTimeout(() => {
                     setPopForm(true)
@@ -390,7 +390,7 @@ export default function GrandGame() {
                 // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
                 // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
     
-                setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [round]: data } }))
+                setGlobalGame(prev => ({ ...prev, norman_decisions: { ...prev.norman_decisions, [data.round]: data } }))
     
     
                 setUserTaskDoneCounter(prev => prev + 1)
@@ -404,7 +404,7 @@ export default function GrandGame() {
                 } else if (data.stay === 'poweron') {
                     setElectricity('poweron')
                 }
-                setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
+                setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [data.round]: data } }))
     
                 setUserTaskDoneCounter(prev => prev + 1)
             }))
@@ -480,13 +480,9 @@ export default function GrandGame() {
                 setMessageToNorman('')
                 setMessageToPete('')
  
-    
-    
                 setUserTaskDoneCounter(0)
                 setWaitPopupErica(false)
-
-
-    
+   
                 console.log('!!!!!!!calcuation done')
             } else {
                 console.log("result page is not ready yet: " + 'NormanDecisions: ' + JSON.stringify(normanDecisions) + 'PeteDecisions: ' + JSON.stringify(peteDecisions))
@@ -745,7 +741,7 @@ export default function GrandGame() {
         console.log('pete just submitted his decison form: ')
         e.preventDefault()
 
-        const peteDecision = { stay: petePower, whichRoute: whichRoutePete, role: 'pete' }
+        const peteDecision = { stay: petePower, whichRoute: whichRoutePete, role: 'pete', round: round }
 
         setPeteDecisions(peteDecision);
         setElectricity(petePower)
@@ -782,7 +778,7 @@ export default function GrandGame() {
         // console.log('Norman just submitted his form:')
         e.preventDefault()
 
-        const normanDecision = { stay: normanStay, whichRoute: whichRoute, role: role };
+        const normanDecision = { stay: normanStay, whichRoute: whichRoute, role: role, round: round };
 
         console.log('normanDecision: ', normanDecision);
 
@@ -825,7 +821,7 @@ export default function GrandGame() {
         // console.log('erica just submitted her messages:')
 
         const messages = {
-            toNorman: messageToNorman, toPete: messageToPete, levelOfWarning: levelOfWarning, role: role
+            toNorman: messageToNorman, toPete: messageToPete, levelOfWarning: levelOfWarning, role: role, round: round
         }
 
 
