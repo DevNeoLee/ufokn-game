@@ -550,7 +550,7 @@ export default function GrandGame() {
     const calculateScore = (normanDecisions, peteDecisions) => {
 
         //지금 라운드의 자료
-        const stayedHome = normanDecisions[round - 1].stay === 'stayon' 
+        const stayedHome = normanDecisions[round - 1]?.[0].stay === 'stayon' 
         const stayedHomePete = peteDecisions[round - 1].stay === 'poweron'
 
         // console.log('stayed home ? : ', stayedHome)
@@ -574,7 +574,7 @@ export default function GrandGame() {
             console.log('======== stayed home norman =========')
             travelRisk = 0;
 
-            decidedAreaNorman = normanDecisions[round - 1].role
+            decidedAreaNorman = normanDecisions[round - 1]?.[0].role
 
             // console.log('normanDecisions[round - 1]: ', normanDecisions[round - 1])
             // console.log('normanDecisions[round - 1].role: ', normanDecisions[round - 1].role)
@@ -612,7 +612,7 @@ export default function GrandGame() {
 
         ///now in case of 'left home'
         } else {
-            decidedAreaNorman = normanDecisions[round - 1].whichRoute;
+            decidedAreaNorman = normanDecisions[round - 1]?.[0].whichRoute;
 
             travelRisk = 5;
 

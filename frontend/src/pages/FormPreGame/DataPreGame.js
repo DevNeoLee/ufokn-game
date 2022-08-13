@@ -31,11 +31,11 @@ const data = {
             "question": "Do you trust the flood risk information provided to you by public institutions (e.g.various levels of government or government agencies)?",
             "choices": ["Not at all", "Mostly no", "Mostly yes", "Yes, completely"]
         },
-        {
-            "id": "7",
-            "question": "Which information sources have/would you use to obtain information about flooding in your area?(Select all that apply) ",
-            "choices": ["Emergency mandates (via emergency manager, government, etc.)", "Social media", "Discussion with nearby residents", "Weather forecasts", "Other (please specify)"]
-        }
+        // {
+        //     "id": "7",
+        //     "question": "Which information sources have/would you use to obtain information about flooding in your area?(Select all that apply) ",
+        //     "choices": ["Emergency mandates (via emergency manager, government, etc.)", "Social media", "Discussion with nearby residents", "Weather forecasts", "Other (please specify)"]
+        // }
     ]
 };
 
