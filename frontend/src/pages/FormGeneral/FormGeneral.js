@@ -119,7 +119,7 @@ export default function FormGeneral({step}) {
                                     ))}
                                 </div>
                                 : 
-                                       <Select question={question.question} answer={answer} name={idx + 1} value={answer} handleChange={handleChange} choices={question.choices}/>
+                                       <Select question={question.question} answer={answer} name={idx + 1} value={answers[idx + 1]} handleChange={handleChange} choices={question.choices}/>
                                 } 
                             </div>
                            ))}

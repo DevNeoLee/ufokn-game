@@ -163,7 +163,7 @@ export default function FormPostGame() {
                             <animated.div style={style} key={question.id} className="inputFrame">
                               <Form.Label htmlFor={`radio`}>{question.question}</Form.Label>
                               {question.choices.map((choice, i) => (
-                                <Radio label={choice} key={i + choice} value={i + 1} answer={answer} name={idx + 1} handleChange={handleChange} required={"required"} />
+                                  <Radio label={choice} key={i + choice} checked={answers[idx + 1] == i + 1} value={i + 1} answer={answer} name={idx + 1} handleChange={handleChange} required={"required"} />
                               ))}
                             </animated.div>
                           )}

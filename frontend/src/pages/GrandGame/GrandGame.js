@@ -398,7 +398,9 @@ export default function GrandGame() {
     
             socket.on("pete_message", (data => {
                 // console.log('Pete data from Pete received: ', data)
-    
+
+                setPeteDecisions(prev => ({ ...prev, [data.round]: data }));
+
                 if (data.stay === 'poweroff') {
                     setElectricity('poweroff')
                 } else if (data.stay === 'poweron') {
@@ -483,7 +485,6 @@ export default function GrandGame() {
                 setUserTaskDoneCounter(0)
                 setWaitPopupErica(false)
    
-                console.log('!!!!!!!calcuation done')
             } else {
                 console.log("result page is not ready yet: " + 'NormanDecisions: ' + JSON.stringify(normanDecisions) + 'PeteDecisions: ' + JSON.stringify(peteDecisions))
             } 
@@ -549,12 +550,14 @@ export default function GrandGame() {
 
     const calculateScore = (normanDecisions, peteDecisions) => {
 
+        console.log('norman Decisions: ', normanDecisions)
+        console.log('pete Decisions: ', peteDecisions)
         //지금 라운드의 자료
-        const stayedHome = normanDecisions[round - 1]?.[0].stay === 'stayon' 
-        const stayedHomePete = peteDecisions[round - 1].stay === 'poweron'
+        const stayedHome = normanDecisions[round - 1]?.stay === 'stayon' 
+        const stayedHomePete = peteDecisions[round - 1]?.stay === 'poweron'
 
-        // console.log('stayed home ? : ', stayedHome)
-        // console.log('stayed home pete? : ', stayedHomePete)
+        console.log('stayed home ? : ', stayedHome)
+        console.log('stayed home pete? : ', stayedHomePete)
 
 
         // console.log('노만의 결정은 ? : ', normanDecisions[round - 1].stay)
@@ -574,7 +577,7 @@ export default function GrandGame() {
             console.log('======== stayed home norman =========')
             travelRisk = 0;
 
-            decidedAreaNorman = normanDecisions[round - 1]?.[0].role
+            decidedAreaNorman = normanDecisions[round - 1]?.role
 
             // console.log('normanDecisions[round - 1]: ', normanDecisions[round - 1])
             // console.log('normanDecisions[round - 1].role: ', normanDecisions[round - 1].role)
@@ -603,7 +606,7 @@ export default function GrandGame() {
             }
             
 
-            // console.log('travelRisk: ', travelRisk)
+            console.log('travelRisk: ', travelRisk)
             // console.log('powerOutrageRisk: ', powerOutrageRisk)
             // console.log('criticalRisk: ', criticalRisk)
             // console.log('decidedAreaNorman: ', decidedAreaNorman)
@@ -612,7 +615,7 @@ export default function GrandGame() {
 
         ///now in case of 'left home'
         } else {
-            decidedAreaNorman = normanDecisions[round - 1]?.[0].whichRoute;
+            decidedAreaNorman = normanDecisions[round - 1]?.whichRoute;
 
             travelRisk = 5;
 
@@ -632,7 +635,7 @@ export default function GrandGame() {
             }
 
 
-            // console.log('======== went out norman =========')
+            console.log('======== went out norman =========')
 
             // console.log('travelRisk: ', travelRisk)
             // console.log('powerOutrageRisk: ', powerOutrageRisk)
@@ -641,16 +644,26 @@ export default function GrandGame() {
             // console.log('waterDepthEndupNorman: ', waterDepthEndupNorman)
         }
 
+        let changedHealth = normanHealth - travelRisk - powerOutrageRisk - criticalRisk;
+
+        console.log('changed Health norman: ', changedHealth)
+
         setNormanHealth(prev => 
             prev - travelRisk - powerOutrageRisk - criticalRisk
         )
 
-        //peteScore update
+        console.log('normanHealth: ', normanHealth)
+
+        setSession(prev => 
+            ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: { ...prev.your_decisions[round], health: changedHealth }} } )
+        )
+
+        // peteScore update
         if (stayedHomePete) {
             console.log('======== stayed home pete =========')
             travelRiskPete = 0;
 
-            decidedAreaPete = peteDecisions[round - 1].role
+            decidedAreaPete = peteDecisions[round - 1]?.role
 
             // console.log('peteDecisions[round - 1]: ', peteDecisions[round - 1])
             // console.log('peteDecisions[round - 1].role: ', peteDecisions[round - 1].role)
@@ -692,7 +705,7 @@ export default function GrandGame() {
 
             ///now in case of 'left home'
         } else {
-            decidedAreaPete = peteDecisions[round - 1].whichRoute;
+            decidedAreaPete = peteDecisions[round - 1]?.whichRoute;
 
             travelRiskPete = 5;
 
@@ -701,7 +714,7 @@ export default function GrandGame() {
             // console.log("decidedAreaPete: ", decidedAreaPete)
 
             data[`round${round + 1}`].map(ele => {
-                if (ele.name.toLowerCase() === decidedAreaPete.toLowerCase()) {
+                if (ele.name?.toLowerCase() === decidedAreaPete?.toLowerCase()) {
                     setWaterDepthEndupPete(ele['Current Water Depth'])
                 }
             })
@@ -728,7 +741,18 @@ export default function GrandGame() {
         setPeteHealth(prev =>
             (prev - travelRiskPete - powerOutrageRisk - criticalRiskPete)
         )
-        //ericaScore update
+        // ericaScore update
+
+        changedHealth = peteHealth - travelRisk - powerOutrageRisk - criticalRisk;
+
+        console.log('changed Health pete: ', changedHealth)
+
+
+        console.log('peteHealth: ', peteHealth)
+
+        setSession(prev =>
+            ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: { ...prev.your_decisions[round], health: changedHealth } } })
+        )
     }
 
 
@@ -743,7 +767,8 @@ export default function GrandGame() {
 
         const peteDecision = { stay: petePower, whichRoute: whichRoutePete, role: 'pete', round: round }
 
-        setPeteDecisions(peteDecision);
+
+        setPeteDecisions(prev => ({...prev, [round]: peteDecision}));
         setElectricity(petePower)
 
         setGlobalSession(prev => ({...prev, your_decisions: {...prev.your_decisions, [round]: peteDecision }}))

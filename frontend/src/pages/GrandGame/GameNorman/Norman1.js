@@ -34,7 +34,7 @@ export default function Erica1({ round }) {
             {transition2((style, item) =>
                 <animated.div style={style} className="roleframe">
                     <div className="riskInfo">
-                        <img src="/weathernews.jpg" />
+                        <img src="/weathernews.jpg" style={{ width: "300px" }} />
                     </div>
                     <p>You see weather news.</p>
                     <p>You learn that a storm is fast approaching
