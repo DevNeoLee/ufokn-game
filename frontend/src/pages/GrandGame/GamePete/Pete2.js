@@ -149,12 +149,12 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
 
     const handleDecisionBox = (e) => {
         e.preventDefault();
-        setPopForm(true)
+        setPopForm(prev => !prev)
     }
 
     const handleFormClose = () => {
         console.log('hello there')
-        setPopForm(false)
+        setPopForm(prev => !prev)
     }
 
     return (
@@ -163,7 +163,7 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
             <div className={popup ? `petePopup` : `petePopup petePopClose`}><PetePopup setPopup={setPopup} /></div>
             {/* <div className={popForm ? `peteForm` : `peteForm peteFormClose`}><PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete}  handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower}/></div> */}
             <div className={popForm ? `peteForm` : `peteForm peteFormClose`}>{popForm && <PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete} handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower} setPopForm={setPopForm} handlePeteForm={handlePeteForm} handleFormClose={handleFormClose} />}</div>
-            <div className={waitPopup ? `waitModal` : `waitModal waitModalClose`}><WaitModalPete handleWaitModal={handleWaitModal} /></div>
+            <div className={waitPopup && round == 1 ? `waitModal` : `waitModal waitModalClose`}><WaitModalPete handleWaitModal={handleWaitModal} /></div>
             {userTaskDoneCounter}
 
             <div className="gameBlockContainer">

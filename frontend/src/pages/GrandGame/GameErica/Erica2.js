@@ -25,7 +25,7 @@ export default function Erica2({ userTaskDoneCounter, globalGame, setGlobalGame,
     const [graphData, setGraphData] = useState([]);
     const [graphData2, setGraphData2] = useState([]);
 
-    const [popup, setPopup] = useState(true);
+    const [popup, setPopup] = useState(false);
     const [waitNPTime, setWaitNPTime] = useState(true);
    
 
@@ -141,7 +141,7 @@ export default function Erica2({ userTaskDoneCounter, globalGame, setGlobalGame,
 
     return (
         <>  
-            <div className={ popup ? `ericaPopup` : `ericaPopup ericaPopClose`}><EricaPopup setPopup={setPopup} /></div>
+            <div className={ popup && round == 1 ? `ericaPopup` : `ericaPopup ericaPopClose`}><EricaPopup setPopup={setPopup} /></div>
             <div className={waitPopupErica ? `waitModal` : `waitModal waitModalClose`}><WaitModalErica setWaitPopupErica={setWaitPopupErica} /></div>
             {userTaskDoneCounter}
             <div className="gameBlockContainerErica">

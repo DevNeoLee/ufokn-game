@@ -195,12 +195,12 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const handleDecisionBox = (e) => {
         e.preventDefault();
-        setPopForm(true)
+        setPopForm(prev => !prev)
     }
 
     const handleFormClose = () => {
         console.log('hello there')
-        setPopForm(false)
+        setPopForm(prev => !prev)
     }
     
     console.log('chatData: ', chatData)
@@ -209,7 +209,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
             {messageFromErica.toNorman && < DecisionControl  handleDecisionBox={handleDecisionBox} />}
             <div className={popup ? `normanPopup` : `normanPopup normanPopClose`}><NormanPopup setPopup={setPopup} /></div>
             <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleNormanForm={handleNormanForm} handleFormClose={handleFormClose}/></div>
-            <div className={waitPopup ? `waitModal` : `waitModal waitModalClose`}><WaitModalNorman handleWaitModal={handleWaitModal} /></div>
+            <div className={waitPopup && round == 1 ? `waitModal` : `waitModal waitModalClose`}><WaitModalNorman handleWaitModal={handleWaitModal} /></div>
             {userTaskDoneCounter}
 
             <div className="gameBlockContainer">

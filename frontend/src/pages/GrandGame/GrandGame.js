@@ -377,7 +377,7 @@ export default function GrandGame() {
                 setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: msg } }))
                 setUserTaskDoneCounter(prev => prev + 1)
                 setTimeout(() => {
-                    setPopForm(true)
+                    // setPopForm(true)
                     setWaitPopupErica(true)
                 }, 3000);
     
@@ -960,23 +960,39 @@ export default function GrandGame() {
                             ? 
                             ericas[3] 
                             :
-                        role === 'Erica'
+                        role === 'Erica' && round == 1
                             ?
                             ericas[step] 
                             : 
+                        role === 'Erica' 
+                            ?
+                            ericas[2]
+                            :
                         role === 'Pete' && resultReady
                             ? 
                             petes[3] 
                             :
-                        role === 'Pete'
+                        role === 'Pete' && round == 1
                             ?
                             petes[step] 
                             : 
+                        role === 'Pete' 
+                            ?
+                            petes[2]
+                            :
                         normanRoles.includes(role) && resultReady
                             ?
                             normans[3] 
                             :
+                        normanRoles.includes(role) && round == 1
+                            ?
                             normans[step]
+                            :
+                        normanRoles.includes(role)
+                            ?
+                            normans[2]
+                            :
+                            null
                         }
 
                     { step !== 2 && <Buttons/> }

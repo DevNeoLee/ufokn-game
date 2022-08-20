@@ -34,7 +34,7 @@ export default function WaitModalPete({ handleWaitModal }) {
                         Your task is to make power substation ON/OFF
                         decision upon receiving messages from the
                         emergency manager (Erica) and identifying
-                        flood risk information yoursel</p>
+                        flood risk information yourself</p>
 
                     <div className="spinner">
                         <div className="spinnerPerson">
