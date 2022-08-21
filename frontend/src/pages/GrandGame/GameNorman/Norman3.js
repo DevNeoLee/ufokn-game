@@ -37,13 +37,17 @@ export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady,
     useEffect(() => {
 
         const interval = setTimeout(() => {
+
+            console.log('round: ', round)
+            console.log('Game_round: ', GAME_ROUND)
+            if (round === GAME_ROUND ) {
+                navigate('/instructionformpostgame')
+            }
             setRound(prevround => prevround + 1)
             setStep(1);
             setResultReady(false);
 
-            if (round === GAME_ROUND ) {
-                navigate('/instructionformpostgame')
-            }
+            
         }, 5000);
         return () => clearTimeout(interval)
     }, [])

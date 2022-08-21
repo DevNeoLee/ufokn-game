@@ -92,7 +92,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const handleMouseEnter1 = () => {
         setGraphData([
-            data[`round${round}`][3]
+            data[`round${round}`][0]
         ])
     }
 
@@ -104,7 +104,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const handleMouseEnter2 = () => {
         setGraphData([
-            data[`round${round}`][4]
+            data[`round${round}`][1]
         ])
     }
 
@@ -116,7 +116,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const handleMouseEnter3 = () => {
         setGraphData([
-            data[`round${round}`][5]
+            data[`round${round}`][2]
         ])
     }
 
@@ -128,12 +128,12 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     const handleMouseEnter4 = () => {
         setGraphData([
-            data[`round${round}`][0]
+            data[`round${round}`][3]
         ])
         setGraphData2(
             [
-                data[`round${round}`][0],
-                data[`round${round}`][0]
+                data[`round${round}`][3],
+                data[`round${round}`][3]
                 // getHouseChartData(),
                 // getHouseChartData()
             // {
@@ -161,6 +161,180 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
         // big house mouse leave effect
     }
 
+    const handleMouseEnter5 = () => {
+        setGraphData([
+            data[`round${round}`][4]
+        ])
+        setGraphData2(
+            [
+                data[`round${round}`][4],
+                data[`round${round}`][4]
+                // getHouseChartData(),
+                // getHouseChartData()
+                // {
+                //     name: 'Route1',
+                //     "Current Water Depth": 8,
+                //     "Depth Estimate in 3 Hours": 11,
+                //     congestion: false
+                // }
+            ]
+        )
+        // /big house hover effect
+        setHoverBH(prev => true)
+    }
+
+    const handleMouseLeave5 = () => {
+        setGraphData([
+
+        ])
+
+        setGraphData2([
+
+        ])
+
+        setHoverBH(prev => false)
+        // big house mouse leave effect
+    }
+
+    const handleMouseEnter6 = () => {
+        setGraphData([
+            data[`round${round}`][5]
+        ])
+        setGraphData2(
+            [
+                data[`round${round}`][5],
+                data[`round${round}`][5]
+                // getHouseChartData(),
+                // getHouseChartData()
+                // {
+                //     name: 'Route1',
+                //     "Current Water Depth": 8,
+                //     "Depth Estimate in 3 Hours": 11,
+                //     congestion: false
+                // }
+            ]
+        )
+        // /big house hover effect
+        setHoverBH(prev => true)
+    }
+
+    const handleMouseLeave6 = () => {
+        setGraphData([
+
+        ])
+
+        setGraphData2([
+
+        ])
+
+        setHoverBH(prev => false)
+        // big house mouse leave effect
+    }
+
+    const handleMouseEnter7 = () => {
+        setGraphData([
+            data[`round${round}`][6]
+        ])
+        setGraphData2(
+            [
+                data[`round${round}`][6],
+                data[`round${round}`][6]
+                // getHouseChartData(),
+                // getHouseChartData()
+                // {
+                //     name: 'Route1',
+                //     "Current Water Depth": 8,
+                //     "Depth Estimate in 3 Hours": 11,
+                //     congestion: false
+                // }
+            ]
+        )
+        // /big house hover effect
+        setHoverBH(prev => true)
+    }
+
+    const handleMouseLeave7 = () => {
+        setGraphData([
+
+        ])
+
+        setGraphData2([
+
+        ])
+
+        setHoverBH(prev => false)
+        // big house mouse leave effect
+    }
+
+    const handleMouseEnter8 = () => {
+        setGraphData([
+            data[`round${round}`][7]
+        ])
+        setGraphData2(
+            [
+                data[`round${round}`][7],
+                data[`round${round}`][7]
+                // getHouseChartData(),
+                // getHouseChartData()
+                // {
+                //     name: 'Route1',
+                //     "Current Water Depth": 8,
+                //     "Depth Estimate in 3 Hours": 11,
+                //     congestion: false
+                // }
+            ]
+        )
+        // /big house hover effect
+        setHoverBH(prev => true)
+    }
+
+    const handleMouseLeave8 = () => {
+        setGraphData([
+
+        ])
+
+        setGraphData2([
+
+        ])
+
+        setHoverBH(prev => false)
+        // big house mouse leave effect
+    }
+
+    const handleMouseEnter9 = () => {
+        setGraphData([
+            data[`round${round}`][8]
+        ])
+        setGraphData2(
+            [
+                data[`round${round}`][8],
+                data[`round${round}`][8]
+                // getHouseChartData(),
+                // getHouseChartData()
+                // {
+                //     name: 'Route1',
+                //     "Current Water Depth": 8,
+                //     "Depth Estimate in 3 Hours": 11,
+                //     congestion: false
+                // }
+            ]
+        )
+        // /big house hover effect
+        setHoverBH(prev => true)
+    }
+
+    const handleMouseLeave9 = () => {
+        setGraphData([
+
+        ])
+
+        setGraphData2([
+
+        ])
+
+        setHoverBH(prev => false)
+        // big house mouse leave effect
+    }
   
 
     const houseChartDataWaved = (data) => {
@@ -341,45 +515,75 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                 <div className="normanHouseA" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill /></div>
                                 :
                               role === 'NormanB' ?
-                              <div className="normanHouseB" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill /></div>
-                              :
-                                <div className="normanHouseC" onMouseEnter={handleMouseEnter4} onMouseLeave={handleMouseLeave4}><HouseFill/></div>
+                                <div className="normanHouseB" onMouseEnter={handleMouseEnter5} onMouseLeave={handleMouseLeave5}><HouseFill /></div>
+                                :
+                              role === 'NormanC' ?    
+                                <div className="normanHouseC" onMouseEnter={handleMouseEnter6} onMouseLeave={handleMouseLeave6}><HouseFill/></div>
+                                :
+                              role === 'NormanD' ?
+                                <div className="normanHouseD" onMouseEnter={handleMouseEnter7} onMouseLeave={handleMouseLeave7}><HouseFill /></div>
+                                :
+                              role === 'NormanE' ?
+                                <div className="normanHouseE" onMouseEnter={handleMouseEnter8} onMouseLeave={handleMouseLeave8}><HouseFill /></div>
+                                :
+                              role === 'NormanF' ?
+                                <div className="normanHouseF" onMouseEnter={handleMouseEnter9} onMouseLeave={handleMouseLeave9}><HouseFill /></div>
+                                :
+                                null
                             }    
                             <div className="route1_tooltip">
-                                <h3>Route 1</h3>
-                                <p>Current Water Depth: <span>{data.round1[3]["Current Water Depth"] } cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[3]["Depth Estimate in 3 Hours"] } cm</span></p>
+                                <h3>Route 1</h3>             
+                                <p>Current Water Depth: <span>{data[`round${round}`][0]["Current Water Depth"] } cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data.round1[0]["Depth Estimate in 3 Hours"] } cm</span></p>
                                 <p> congestion: <span>No</span>{ }</p>
                             </div>
                             <div className="route2_tooltip">
                                 <h3>Route 2</h3>
-                                <p>Current Water Depth: <span>{data.round1[4]["Current Water Depth"]} cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[4]["Depth Estimate in 3 Hours"] } cm</span></p>
+                                <p>Current Water Depth: <span>{data[`round${round}`][1]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data.round1[1]["Depth Estimate in 3 Hours"] } cm</span></p>
                                 <p> congestion: <span>No</span>{ }</p>
                             </div>
                             <div className="route3_tooltip">
                                 <h3>Route 3</h3>
-                                <p>Current Water Depth: <span>{data.round1[5]["Current Water Depth"] } cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[5]["Depth Estimate in 3 Hours"] } cm</span></p>
+                                <p>Current Water Depth: <span>{data[`round${round}`][2]["Current Water Depth"] } cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][2]["Depth Estimate in 3 Hours"] } cm</span></p>
                                 <p> congestion: <span>No</span>{ }</p>
                             </div>
 
                             <div className="normanHouse_tooltipA">
                                 <h3>Norman A House</h3>
-                                <p>Current Water Depth: <span>{data.round1[0]["Current Water Depth"]} cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[0]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Current Water Depth: <span>{data[`round${round}`][3]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][3]["Depth Estimate in 3 Hours"]} cm</span></p>
                                 <p>Electricity: <span>ON</span>{ }</p>
                             </div>
                             <div className="normanHouse_tooltipB">
                                 <h3>Norman B House</h3>
-                                <p>Current Water Depth: <span>{data.round1[1]["Current Water Depth"]} cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[1]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Current Water Depth: <span>{data[`round${round}`][4]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][4]["Depth Estimate in 3 Hours"]} cm</span></p>
                                 <p>Electricity: <span>ON</span>{ }</p>
                             </div>
                             <div className="normanHouse_tooltipC">
                                 <h3>Norman C House</h3>
-                                <p>Current Water Depth: <span>{data.round1[2]["Current Water Depth"]} cm</span></p>
-                                <p>Depth Estimate in 3 Hours: <span>{data.round1[2]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Current Water Depth: <span>{data[`round${round}`][5]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][5]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Electricity: <span>ON</span>{ }</p>
+                            </div>
+                            <div className="normanHouse_tooltipD">
+                                <h3>Norman D House</h3>
+                                <p>Current Water Depth: <span>{data[`round${round}`][6]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][6]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Electricity: <span>ON</span>{ }</p>
+                            </div>
+                            <div className="normanHouse_tooltipE">
+                                <h3>Norman E House</h3>
+                                <p>Current Water Depth: <span>{data[`round${round}`][7]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][7]["Depth Estimate in 3 Hours"]} cm</span></p>
+                                <p>Electricity: <span>ON</span>{ }</p>
+                            </div>
+                            <div className="normanHouse_tooltipF">
+                                <h3>Norman F House</h3>
+                                <p>Current Water Depth: <span>{data[`round${round}`][8]["Current Water Depth"]} cm</span></p>
+                                <p>Depth Estimate in 3 Hours: <span>{data[`round${round}`][8]["Depth Estimate in 3 Hours"]} cm</span></p>
                                 <p>Electricity: <span>ON</span>{ }</p>
                             </div>
 

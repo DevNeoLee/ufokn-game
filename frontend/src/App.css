@@ -1376,6 +1376,9 @@ h2 {
 .normanHouseA,
 .normanHouseB,
 .normanHouseC,
+.normanHouseD,
+.normanHouseE,
+.normanHouseF,
 .peteHouse,
 .route1_tooltip,
 .route2_tooltip,
@@ -1383,7 +1386,10 @@ h2 {
 .normanHouse_tooltip,
 .normanHouse_tooltipA,
 .normanHouse_tooltipB,
-.normanHouse_tooltipC {
+.normanHouse_tooltipC,
+.normanHouse_tooltipD,
+.normanHouse_tooltipE,
+.normanHouse_tooltipF {
   position: absolute;
   transition: 250ms ease-in-out;
 }
@@ -1409,6 +1415,9 @@ h2 {
 .normanHouse_tooltipA,
 .normanHouse_tooltipB,
 .normanHouse_tooltipC,
+.normanHouse_tooltipD,
+.normanHouse_tooltipE,
+.normanHouse_tooltipF,
 .peteHouse_tooltip {
   visibility: hidden;
   transition: 100ms ease-in-out;
@@ -1484,6 +1493,9 @@ h2 {
 .normanHouseA,
 .normanHouseB,
 .normanHouseC,
+.normanHouseD,
+.normanHouseE,
+.normanHouseF,
 .peteHouse {
   /* color: red; */
   background-color: white;
@@ -1507,6 +1519,21 @@ h2 {
 .normanHouseC {
   top: 150px;
   left: 250px;
+}
+
+.normanHouseD {
+  top: 150px;
+  left: 260px;
+}
+
+.normanHouseE {
+  top: 150px;
+  left: 270px;
+}
+
+.normanHouseF {
+  top: 150px;
+  left: 280px;
 }
 
 .peteHouse {
@@ -1536,6 +1563,9 @@ h2 {
 .normanHouseA svg,
 .normanHouseB svg,
 .normanHouseC svg,
+.normanHouseD svg,
+.normanHouseE svg,
+.normanHouseF svg,
 .peteHouse svg {
   width: 100%;
   height: 100%;
@@ -1556,6 +1586,9 @@ h2 {
 .normanHouse_tooltipA,
 .normanHouse_tooltipB,
 .normanHouse_tooltipC,
+.normanHouse_tooltipD,
+.normanHouse_tooltipE,
+.normanHouse_tooltipF,
 .peteHouse_tooltip {
   transform: rotate(0deg);
   /* background-color: lightcoral; */
@@ -1585,6 +1618,21 @@ h2 {
   left: 252px;
 }
 
+.normanHouse_tooltipD {
+  top: 25px;
+  left: 262px;
+}
+
+.normanHouse_tooltipE {
+  top: 25px;
+  left: 272px;
+}
+
+.normanHouse_tooltipF {
+  top: 25px;
+  left: 282px;
+}
+
 .peteHouse_toptip {
   top: 25px;
   left: 252px;
@@ -1600,6 +1648,9 @@ h2 {
 .normanHouseA:hover~.normanHouse_tooltipA,
 .normanHouseB:hover~.normanHouse_tooltipB,
 .normanHouseC:hover~.normanHouse_tooltipC,
+.normanHouseD:hover~.normanHouse_tooltipD,
+.normanHouseE:hover~.normanHouse_tooltipE,
+.normanHouseF:hover~.normanHouse_tooltipF,
 .peteHouse:hover~.peteHouse_tooltip {
   visibility: visible;
   transition: 250ms ease-in-out;
