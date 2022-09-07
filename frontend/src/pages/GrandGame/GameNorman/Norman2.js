@@ -501,7 +501,6 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                         <input autoFocus type="text" value={chat} onChange={handleChatChange}/>
                                         <button type="submit">Send</button>
                                     </div>
-                                    
                                 </form>
                             </div>
                         </div>
@@ -629,6 +628,11 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                         <p className="">
                                             {messageFromErica.toNorman}
                                         </p>
+                                        {messageFromErica.map((data, i) => (
+                                            <div key={i}>{data.role}
+                                                : {data.message}
+                                            </div>
+                                        ))}
                                         {messageFromErica && <div style={{ display: "flex"}}>
                                             <div style={{ color: "blue", marginRight: "0.5rem"}}>Current Level of Warning:  </div> {messageFromErica.levelOfWarning}
                                         </div>}

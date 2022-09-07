@@ -368,7 +368,7 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
 
     return (
         <>
-            {messageFromErica.toPete && < DecisionControl handleDecisionBox={handleDecisionBox} />}
+            {messageFromErica[0]?.toPete && < DecisionControl handleDecisionBox={handleDecisionBox} />}
             <div className={popup ? `petePopup` : `petePopup petePopClose`}><PetePopup setPopup={setPopup} /></div>
             {/* <div className={popForm ? `peteForm` : `peteForm peteFormClose`}><PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete}  handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower}/></div> */}
             <div className={popForm ? `peteForm` : `peteForm peteFormClose`}>{popForm && <PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete} handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower} setPopForm={setPopForm} handlePeteForm={handlePeteForm} handleFormClose={handleFormClose} />}</div>
@@ -580,7 +580,7 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
                                         <div className="incomingEricaMessage">
                                             <div className="message_erica"><h5>Message from Erica </h5> <h6> Emergency Manager</h6> </div>{messageFromErica.toPete}
                                         </div>
-                                        {messageFromErica && <div className="">
+                                        {messageFromErica[0] && <div className="">
                                             <div style={{ color: "blue", marginTop: "0.6rem", marginRight: "0.5rem", display: "flex"}}>Current Level of Warning: <p style={{ color: "red", marginLeft: "0.5rem"}}>{messageFromErica.levelOfWarning} </p></div> 
                                         </div>}
                                     </div>

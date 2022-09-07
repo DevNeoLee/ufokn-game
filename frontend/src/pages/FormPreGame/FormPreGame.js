@@ -19,16 +19,15 @@ import { Link } from "react-router-dom"
 import HOST from "../../utils/routes";
 import axios from 'axios';
 
-const checkboxes = data.questions.filter(ele =>
-  ele.multiple === 'true'
-)
-
-console.log('checkboxes: ', checkboxes)
 
 export default function FormPreGame() {
-
+  
   const [questions, setQuestions] = useState(
     data
+    )
+    
+  const checkboxes = data.questions.filter(ele =>
+    ele.multiple === 'true'
   )
 
   const questionQuantity = data.questions.length;
@@ -62,10 +61,10 @@ export default function FormPreGame() {
     let mapped = (checkedState.map((ele, ind) =>
     {
       if (index == ind) {
-        console.log("같네: ", ind)
+        // console.log("같네: ", ind)
         return !ele
       }
-      console.log('다르네: ', ind)
+      // console.log('다르네: ', ind)
       return ele;
     }
     ))

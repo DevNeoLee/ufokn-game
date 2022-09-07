@@ -138,12 +138,12 @@ export default function GrandGame() {
 
     const [normanDecisionsComplete, setNormanDecisionsComplete] = useState(false);
 
-    const [ericaDecisions, setEricaDecisions] = useState({ 1: { toNorman: "", toPete: "", levelOfWarning: "" }, 2: {}, 3: {}, 4: {}})
+    const [ericaDecisions, setEricaDecisions] = useState({ 1: [], 2: [], 3: [], 4: []})
 
     const [levelOfWarning, setLevelOfWarning] = useState('')
     const [messageToNorman, setMessageToNorman] = useState('')
     const [messageToPete, setMessageToPete] = useState('')
-    const [messageFromErica, setMessageFromErica] = useState('')
+    const [messageFromErica, setMessageFromErica] = useState([])
     
     const [petePower, setPetePower] = useState("poweron")
     const [normanStay, setNormanStay] = useState("stayon")
@@ -373,8 +373,14 @@ export default function GrandGame() {
     
             socket.on("erica_message", (msg) => {
                 // console.log('Erica message from Erica received: ', msg)
-                setMessageFromErica(msg)
-                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: msg } }))
+                // setMessageFromErica(msg)
+                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: [...prev.erica_messages[msg.round], msg] } }))
+
+                setMessageFromErica(prev => ([ ...prev, msg]));
+
+                // console.log("chatData Updated: ", data)
+
+                // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: msg } }))
                 setUserTaskDoneCounter(prev => prev + 1)
                 setTimeout(() => {
                     // setPopForm(true)
@@ -478,7 +484,7 @@ export default function GrandGame() {
                 setPetePower('')
                 setWhichRoute('')
                 setNormanStay('')
-                setMessageFromErica('')
+                setMessageFromErica([])
                 setMessageToNorman('')
                 setMessageToPete('')
  
@@ -843,14 +849,12 @@ export default function GrandGame() {
     //erica communicating through SOCKET  + to do: save to MongoDB
     const handleSubmitErica = async (e) => {
         e.preventDefault()
-        // console.log('erica just submitted her messages:')
 
         const messages = {
             toNorman: messageToNorman, toPete: messageToPete, levelOfWarning: levelOfWarning, role: role, round: round
         }
 
-
-        setEricaDecisions(prev => ({...prev, [round]: messages })) 
+        setEricaDecisions(prev => ({ ...prev, [round]: [...prev[round], messages] }));
 
         setGlobalSession(prev => ({...prev, your_decisions: {...prev.your_decisions, [round]: messages}}))
 
@@ -893,7 +897,7 @@ export default function GrandGame() {
     const ericas = [
         <Erica0 step={step} role setRole />,
         <Erica1 step={step} round={round} />,
-        <Erica2 userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} setWaitPopupErica={setWaitPopupErica} waitPopupErica={waitPopupErica} handleSubmitErica={handleSubmitErica} round={round} handleChangeWarning={handleChangeWarning} handleChangeMessageToNorman={handleChangeMessageToNorman} handleChangeMessageToPete={handleChangeMessageToPete} levelOfWarning={levelOfWarning} messageToPete={messageToPete} messageToNorman={messageToNorman} ericaHealth={ericaHealth} players={players} clients={clients}/>,
+        <Erica2 userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} setWaitPopupErica={setWaitPopupErica} waitPopupErica={waitPopupErica} handleSubmitErica={handleSubmitErica} round={round} handleChangeWarning={handleChangeWarning} handleChangeMessageToNorman={handleChangeMessageToNorman} handleChangeMessageToPete={handleChangeMessageToPete} levelOfWarning={levelOfWarning} messageToPete={messageToPete} messageToNorman={messageToNorman} ericaHealth={ericaHealth} players={players} clients={clients} ericaDecisions={ericaDecisions }/>,
         <Erica3 GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} petePower={petePower} normanHealth={normanHealth} peteHealth={peteHealth} round={round} ericaHealth={ericaHealth} messagesStorageErica={messagesStorageErica} normanStay={normanStay} />,
     ];
     

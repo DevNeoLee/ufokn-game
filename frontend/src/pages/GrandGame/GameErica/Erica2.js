@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import "../../../App.css"
 
 import { HeartFill, HouseFill, HospitalFill, LightningFill } from 'react-bootstrap-icons';
@@ -9,13 +9,15 @@ import Radio from "../../../components/Radio"
 import EricaPopup from '../../../components/EricaPopup';
 import WaitModalErica from '../../../components/WaitModalErica';
 
+import { AiFillWechat } from 'react-icons/ai';
+
 
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { Link } from "react-router-dom"
 
-export default function Erica2({ clients, userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, waitPopupErica, setWaitPopupErica, players, handleSubmitErica, round, handleChangeWarning, handleChangeMessageToNorman, handleChangeMessageToPete, levelOfWarning, messageToNorman, messageToPete, ericaHealth, electricity, step, normanQuestion, normanHealth }) {
+export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, waitPopupErica, setWaitPopupErica, players, handleSubmitErica, round, handleChangeWarning, handleChangeMessageToNorman, handleChangeMessageToPete, levelOfWarning, messageToNorman, messageToPete, ericaHealth, electricity, step, normanQuestion, normanHealth }) {
 
     const [hover1, setHover1] = useState(false);
     const [hover2, setHover2] = useState(false);
@@ -28,7 +30,10 @@ export default function Erica2({ clients, userTaskDoneCounter, globalGame, setGl
     const [popup, setPopup] = useState(false);
     const [waitNPTime, setWaitNPTime] = useState(true);
    
+    // chatting auto scroll on the screen when the chat contents are more than screen size
+    const containerRef = useRef(null);
 
+    console.log('erica messages !: ', ericaDecisions)
     // const handleMouseEnter1 = () => {
     //     setGraphData([
     //               {
@@ -480,7 +485,28 @@ export default function Erica2({ clients, userTaskDoneCounter, globalGame, setGl
                                     <p>Electricity: <span>ON</span>{ }</p>
                                 </div>
                             </div>
-                        
+                            <div className="ericaChatHistory">
+                                <AiFillWechat size={30} color="white" /><span style={{ color: "white" }}>Erica Message History</span>
+                                <h6>Your Message History</h6>
+                                <div className="ericaChatScreen" id="message-container" ref={containerRef}>
+                                        ChatData.round: {round}
+                                    {ericaDecisions[round] && ericaDecisions[round].map((data, i) => (
+                                            <div key={i}>
+                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: {data.levelOfWarning}</span>
+                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>To Normans: {data.toNorman}</span>
+                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>To Pete: {data.toPete}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {/* <div className="chatInputBox">
+                                        <form onSubmit={()=>console.log('submit clicked!')}>
+                                            <div className="chatInput">
+                                                <input autoFocus type="text" onChange={() => console.log('hello world!')} />
+                                                <button type="submit">Send</button>
+                                            </div>
+                                        </form>
+                                    </div> */}
+                            </div>
                             {
                                 normanQuestion ?
                                     <Form>

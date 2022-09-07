@@ -48,7 +48,7 @@ let rooms = [];
 let room = null;
 let gameState = {};
 
-const MAX_CLIENTS = 9;
+const MAX_CLIENTS = 8;
 const MIN_CLIENTS = 5;
 
 //게임 웹소켓 로직
