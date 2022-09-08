@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import "../../../App.css"
 
 import { HeartFill, HospitalFill, HouseFill, Lightning, LightningCharge, LightningChargeFill, LightningFill } from 'react-bootstrap-icons';
@@ -31,7 +31,7 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
     const [waitPopup, setWaitPopup] = useState(true)
     const [waitEricaTime, setWaitEricaTime] = useState(true);
 
-
+    const containerRef2 = useRef(null);
     // const handleMouseEnter1 = () => {
     //     setGraphData([
     //               {
@@ -47,6 +47,17 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
         console.log('globalSession: ', globalSession)
 
     }, [])
+
+    useEffect(() => {
+        if (containerRef2 && containerRef2.current) {
+            const element = containerRef2.current;
+            element.scroll({
+                top: element.scrollHeight,
+                left: 0,
+                behavior: "smooth"
+            })
+        }
+    }, [containerRef2, messageFromErica])
 
     const handlePeteForm = () => {
 
@@ -571,26 +582,24 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
                             </div>
                         </div>
                         <div className="gameBlock4 peteColor">
-                            {/* <h2>Message from Emergency Manager, pete</h2> */}
                             <div className="messageBox">
                                 <div className="phonebox"><img src="/phone_side.png" width="520px" /></div>
-                                <div className="comingMessage">
-                                    <AiFillWechat size={30} /><span>Local Emergency App</span>
-                                    <div className="alertMessagePete">
-                                        <div className="incomingEricaMessage">
-                                            <div className="message_erica"><h5>Message from Erica </h5> <h6> Emergency Manager</h6> </div>{messageFromErica.toPete}
-                                        </div>
-                                        {messageFromErica[0] && <div className="">
-                                            <div style={{ color: "blue", marginTop: "0.6rem", marginRight: "0.5rem", display: "flex"}}>Current Level of Warning: <p style={{ color: "red", marginLeft: "0.5rem"}}>{messageFromErica.levelOfWarning} </p></div> 
-                                        </div>}
+                                <div className="ericaChatHistoryNorman">
+                                    <AiFillWechat size={30} /><span>Local Emergency App, Message from Emergency Manager</span>
+                                    <div className="ericaChatScreenNorman" style={{ fontSize: "0.9rem" }} ref={containerRef2}>
+                                        {messageFromErica[round] && messageFromErica[round].map((data, i) => (
+                                            <div key={i}>
+                                                <div>Message {i + 1}:</div>
+                                                <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem", marginRight: "1rem" }}>{data.levelOfWarning}</span></span>
+                                                <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Message: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem" }}>{data.toPete}</span></span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </>
     )

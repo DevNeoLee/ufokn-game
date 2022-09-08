@@ -51,6 +51,18 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
 
     }, [])
 
+    useEffect(() => {
+
+        if (containerRef && containerRef.current) {
+            const element = containerRef.current;
+            element.scroll({
+                top: element.scrollHeight,
+                left: 0,
+                behavior: "smooth"
+            })
+        }
+    }, [containerRef, ericaDecisions])
+
     const getHouseChartData = () => {
 
         let houseChartdata = data[`round${round}`][3];
@@ -486,15 +498,15 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
                                 </div>
                             </div>
                             <div className="ericaChatHistory">
-                                <AiFillWechat size={30} color="white" /><span style={{ color: "white" }}>Erica Message History</span>
-                                <h6>Your Message History</h6>
+                                <AiFillWechat size={30} color="white" /><span style={{ color: "white" }}>Your Outgoing Message History</span>
+                                {/* <h6>Your Message History</h6> */}
                                 <div className="ericaChatScreen" id="message-container" ref={containerRef}>
-                                        ChatData.round: {round}
+                                        {/* Round: {round} */}
                                     {ericaDecisions[round] && ericaDecisions[round].map((data, i) => (
-                                            <div key={i}>
-                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: {data.levelOfWarning}</span>
-                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>To Normans: {data.toNorman}</span>
-                                            <span style={{ color: 'red', minWidth: "200px", backgroundColor: "white" }}>To Pete: {data.toPete}</span>
+                                        <div style={{ fontSize: "0.9rem" }} key={i}>Message {i + 1}:
+                                            <div style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: <div style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white" }}>{data.levelOfWarning}</div></div>
+                                            <div style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>To Normans: <div style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white" }}>{data.toNorman}</div></div>
+                                            <div style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>To Pete: <div style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white" }}>{data.toPete}</div></div>
                                             </div>
                                         ))}
                                     </div>

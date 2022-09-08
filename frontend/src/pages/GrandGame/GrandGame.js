@@ -143,7 +143,7 @@ export default function GrandGame() {
     const [levelOfWarning, setLevelOfWarning] = useState('')
     const [messageToNorman, setMessageToNorman] = useState('')
     const [messageToPete, setMessageToPete] = useState('')
-    const [messageFromErica, setMessageFromErica] = useState([])
+    const [messageFromErica, setMessageFromErica] = useState({ 1: [], 2: [], 3: [], 4: [] })
     
     const [petePower, setPetePower] = useState("poweron")
     const [normanStay, setNormanStay] = useState("stayon")
@@ -376,7 +376,7 @@ export default function GrandGame() {
                 // setMessageFromErica(msg)
                 setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: [...prev.erica_messages[msg.round], msg] } }))
 
-                setMessageFromErica(prev => ([ ...prev, msg]));
+                setMessageFromErica(prev => ({ ...prev, [round]: [...prev[round], msg] }));
 
                 // console.log("chatData Updated: ", data)
 
@@ -868,7 +868,6 @@ export default function GrandGame() {
         console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
 
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: messages } })
-
 
         setLevelOfWarning('')
         setMessageToNorman('')

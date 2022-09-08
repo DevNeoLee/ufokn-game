@@ -70,6 +70,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     // chatting auto scroll on the screen when the chat contents are more than screen size
     const containerRef = useRef(null);
+    const containerRef2 = useRef(null);
 
     useEffect(() => {
 
@@ -82,6 +83,18 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
             })
         }
     }, [containerRef, chatData])
+
+    useEffect(() => {
+
+        if (containerRef2 && containerRef2.current) {
+            const element = containerRef2.current;
+            element.scroll({
+                top: element.scrollHeight,
+                left: 0,
+                behavior: "smooth"
+            })
+        }
+    }, [containerRef2, messageFromErica])
     // const getHouseChartData = () => {
 
     //     let houseChartdata = data[`round${round}`][3];
@@ -377,10 +390,10 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
         setPopForm(prev => !prev)
     }
     
-    console.log('chatData: ', chatData)
+    console.log('messageFromErica[round]: ', messageFromErica[round])
     return (
         <>
-            {messageFromErica.toNorman && < DecisionControl  handleDecisionBox={handleDecisionBox} />}
+            {messageFromErica[round].toNorman && < DecisionControl  handleDecisionBox={handleDecisionBox} />}
             <div className={popup ? `normanPopup` : `normanPopup normanPopClose`}><NormanPopup setPopup={setPopup} /></div>
             <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleNormanForm={handleNormanForm} handleFormClose={handleFormClose}/></div>
             <div className={waitPopup && round == 1 ? `waitModal` : `waitModal waitModalClose`}><WaitModalNorman handleWaitModal={handleWaitModal} /></div>
@@ -616,26 +629,18 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                             </div>
                         </div>
                         <div className="gameBlock4">
-                            {/* <h2>Message from Emergency Manager, Erica</h2> */}
                             <div className="messageBox">
                                 <div className="phonebox"><img src="/phone_side.png" width="520px"/></div>
-                                <div className="comingMessage">
-                                    <AiFillWechat size={30} /><span>Local Emergency App</span>
-                                    <div className="incomingEricaMessage">
-                                        <div className="message_erica"><h5>Message from Erica </h5> <h6> Emergency Manager</h6> </div>
-                                    </div>
-                                    <div className="alertMessage">
-                                        <p className="">
-                                            {messageFromErica.toNorman}
-                                        </p>
-                                        {messageFromErica.map((data, i) => (
-                                            <div key={i}>{data.role}
-                                                : {data.message}
+                                    <div className="ericaChatHistoryNorman">
+                                    <AiFillWechat size={30} /><span>Local Emergency App, Message from Emergency Manager</span>
+                                    <div className="ericaChatScreenNorman" style={{ fontSize: "0.9rem" }} ref={containerRef2}>
+                                        {messageFromErica[round] && messageFromErica[round].map((data, i) => (
+                                            <div key={i}>
+                                                <div>Message {i + 1}:</div>
+                                                <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem", marginRight: "1rem" }}>{data.levelOfWarning}</span></span>
+                                                <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Message: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem" }}>{data.toNorman}</span></span>
                                             </div>
                                         ))}
-                                        {messageFromErica && <div style={{ display: "flex"}}>
-                                            <div style={{ color: "blue", marginRight: "0.5rem"}}>Current Level of Warning:  </div> {messageFromErica.levelOfWarning}
-                                        </div>}
                                     </div>
                                 </div>
                             </div>
