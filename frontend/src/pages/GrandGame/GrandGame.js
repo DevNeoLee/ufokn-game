@@ -51,32 +51,32 @@ export default function GrandGame() {
 
     const ymap = doc.get('map', Y.Map);
   
-    useEffect(()=> {
-        if (process.env.NODE_ENV === 'production') {
-            wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
-        } else {
-            wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
-        }
+    // useEffect(()=> {
+    //     if (process.env.NODE_ENV === 'production') {
+    //         wsProvider = new WebsocketProvider('wss://ufokn-game.herokuapp.com:1234', 'thisRoom', doc)
+    //     } else {
+    //         wsProvider = new WebsocketProvider('ws://localhost:1234', 'thisRoom', doc)
+    //     }
 
-        wsProvider.on('status', e => {
-            // console.log("status: ", doc);
-        })
+    //     wsProvider.on('status', e => {
+    //         // console.log("status: ", doc);
+    //     })
 
-        wsProvider.on('synced', synced => {
-            // console.log('Sync: ', synced);
-        })
+    //     wsProvider.on('synced', synced => {
+    //         // console.log('Sync: ', synced);
+    //     })
 
-        yarray.observeDeep(() => {
-            // console.log('Observed array: ', yarray.toJSON());
-        })
+    //     yarray.observeDeep(() => {
+    //         // console.log('Observed array: ', yarray.toJSON());
+    //     })
 
-        ymap.observeDeep(() => {
-            // console.log('Observed map: ', ymap.toJSON());
-        })
+    //     ymap.observeDeep(() => {
+    //         // console.log('Observed map: ', ymap.toJSON());
+    //     })
 
-        window.example = { wsProvider, doc, yarray }
+    //     window.example = { wsProvider, doc, yarray }
 
-    }, [])
+    // }, [])
     
     const data = JSON.parse(JSON.stringify(original_data))
     
@@ -131,6 +131,9 @@ export default function GrandGame() {
     
     const [roundFinished, setRoundFinished] = useState(false)
     const [resultReady, setResultReady] = useState(false)//////////true <-> false 로 step값과 함께 페이지 이동 결정함
+
+    const [submittedPete, setSubmittedPete] = useState(false);
+    const [submittedNorman, setSubmittedNorman] = useState(false);
 
     const [peteDecisions, setPeteDecisions] = useState({ 1: {}, 2: {}, 3: {}, 4: {} });
 
@@ -212,6 +215,11 @@ export default function GrandGame() {
         { room_name: "3", players: [], chatting: {}, norman_decisions: { 1: {}, 2: {}, 3: {}, 4: {} } }
     ])
 
+    const [ericaTime, setEricaTime] = useState(50)
+    const [decisionTime, setDecisionTime] = useState(60);
+
+    const [decisionReady, setDecisionReady ] = useState(false);
+
     useEffect(() => {
         const socket = io()
         setSocket(socket)
@@ -220,8 +228,8 @@ export default function GrandGame() {
             setSocket(null);
             console.log("================= socket close ===========")
         }
-
     }, [])
+
 
     useEffect(() => {
         const getInitialSession = async () => {
@@ -353,10 +361,21 @@ export default function GrandGame() {
     
             socket.on("game_start", () => {
                 const gameOn = async () => {
+                    
+                    setGameStart(true);
 
-                    setGameStart(true)
+                    
                 }
+                // let timeInterval = setInterval(() => setTime(prev => prev - 1), 1000);
                 gameOn();
+            })
+
+            socket.on("ericaTimeCounter", (ericaTimeCounter) => {
+                setEricaTime(ericaTimeCounter)
+            })
+
+            socket.on("decisionTimeCounter", (decisionTimeCounter) => {
+                setDecisionTime(decisionTimeCounter)
             })
     
             socket.onAny((event, ...args) => {
@@ -371,22 +390,40 @@ export default function GrandGame() {
                 // console.log("someone left the room")
             })
     
-            socket.on("erica_message", (msg) => {
-                // console.log('Erica message from Erica received: ', msg)
-                // setMessageFromErica(msg)
-                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: [...prev.erica_messages[msg.round], msg] } }))
-
-                setMessageFromErica(prev => ({ ...prev, [round]: [...prev[round], msg] }));
-
+            // { 1: [], 2: [], 3: [], 4: [] }
+            socket.on("erica_message", ({messages, firstMessage}) => {
+                // console.log('Erica message from Erica received: ', messages)
+                // setMessageFromErica(messages)
+                setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [messages.round]: [...prev.erica_messages[messages.round], messages] } }))
+                console.log('hmm 1')
+                console.log('messagefromErica GG socket: ', messageFromErica)
+                console.log('messages: ', messages)
+                console.log('round Erica_message GG websocket: ', messages.round)
+                setMessageFromErica(prev => ({ ...prev, [messages.round]: [...prev[messages.round], messages] }));
+                console.log('hmm 2')
                 // console.log("chatData Updated: ", data)
 
-                // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [msg.round]: msg } }))
-                setUserTaskDoneCounter(prev => prev + 1)
-                setTimeout(() => {
-                    // setPopForm(true)
-                    setWaitPopupErica(true)
-                }, 3000);
+                // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [messages.round]: messages } }))
+                // setUserTaskDoneCounter(prev => prev + 1)
+
+                
+                console.log('decisionReady: ', decisionReady);
+                console.log('messageFromErica[round].length: ', messageFromErica[messages.round].length)
+                
+                if (firstMessage )  {
+                    socket.emit('decisionReadyTimer', "1")
+                }
+
+                setDecisionReady(true);
+                // setTimeout(() => {
+                //     // setPopForm(true)
+                //     setWaitPopupErica(true)
+                // }, 3000);
     
+            })
+
+            socket.on("decisionReady", () => {
+                setDecisionReady(true);
             })
     
             // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
@@ -459,8 +496,8 @@ export default function GrandGame() {
         const roundDone = async () => {
             console.log('userTaskCounter: ', userTaskDoneCounter);
 
-            if ((userTaskDoneCounter !== 0 && roomOneSize === userTaskDoneCounter + 1 && round === 1) || 
-                (userTaskDoneCounter !== 0 && roomOneSize === userTaskDoneCounter + 1)) {
+            if ((userTaskDoneCounter !== 0 && roomOneSize === userTaskDoneCounter + 2 && round === 1) || 
+                (userTaskDoneCounter !== 0 && roomOneSize === userTaskDoneCounter + 2)) {
                 setPopForm(false)
     
                 //// calculate socres here///////
@@ -484,12 +521,14 @@ export default function GrandGame() {
                 setPetePower('')
                 setWhichRoute('')
                 setNormanStay('')
-                setMessageFromErica([])
                 setMessageToNorman('')
                 setMessageToPete('')
  
                 setUserTaskDoneCounter(0)
                 setWaitPopupErica(false)
+                setEricaTime(50)
+                setDecisionTime(60)
+                setDecisionReady(false)
    
             } else {
                 console.log("result page is not ready yet: " + 'NormanDecisions: ' + JSON.stringify(normanDecisions) + 'PeteDecisions: ' + JSON.stringify(peteDecisions))
@@ -761,9 +800,6 @@ export default function GrandGame() {
         )
     }
 
-
-
-
      // peteDecisions = {stay: null, whichRoute: null } 
     // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
     const handleSubmitPete = async (e) => {
@@ -788,6 +824,8 @@ export default function GrandGame() {
         console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
 
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: peteDecision } })
+        setSubmittedPete(true);
+
     }
 
     const handleChangePetePower = (e) => {
@@ -795,7 +833,6 @@ export default function GrandGame() {
         console.log('pete power: ', e.target.value)
 
     }
-
 
     const handleChangeWhichRoutePete =(e) => {
         setWhichRoutePete(e.target.value)
@@ -812,9 +849,7 @@ export default function GrandGame() {
         const normanDecision = { stay: normanStay, whichRoute: whichRoute, role: role, round: round };
 
         console.log('normanDecision: ', normanDecision);
-
         setNormanDecisions(prev => ({...prev, [round]: [...prev[round], normanDecision ]}))
-        
         // setNormanStay(true)
         // setWhichRoute('')
 
@@ -832,6 +867,7 @@ export default function GrandGame() {
 
         //Update to MongoDB
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: normanDecision } })
+        setSubmittedNorman(true);
     }
 
     const handleChangeNormanStay = (e) => {
@@ -854,13 +890,19 @@ export default function GrandGame() {
             toNorman: messageToNorman, toPete: messageToPete, levelOfWarning: levelOfWarning, role: role, round: round
         }
 
-        setEricaDecisions(prev => ({ ...prev, [round]: [...prev[round], messages] }));
+        let firstMessage = ericaDecisions[round].length == 0;
 
+        console.log('ericaDecisions[round].length == 0 : ', ericaDecisions[round].length == 0)
+        console.log('firstMessage: ', firstMessage)
+
+        setDecisionReady(true);
+        setEricaDecisions(prev => ({ ...prev, [round]: [...prev[round], messages] }));
+        console.log('ericaDecisions: ', ericaDecisions)
         setGlobalSession(prev => ({...prev, your_decisions: {...prev.your_decisions, [round]: messages}}))
 
         setSession(prev => ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: messages } }))
         // socket interaction
-        socket.emit('erica_message', messages)
+        socket.emit('erica_message', {messages, firstMessage})
 
         // sessionStorage에다가 저장해 주어 이걸 다음 다른 페이지들에게 정확히 패스해 줄수 있다. 
         sessionStorage.setItem('ufoknSession', JSON.stringify({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: messages } }))
@@ -896,22 +938,22 @@ export default function GrandGame() {
     const ericas = [
         <Erica0 step={step} role setRole />,
         <Erica1 step={step} round={round} />,
-        <Erica2 userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} setWaitPopupErica={setWaitPopupErica} waitPopupErica={waitPopupErica} handleSubmitErica={handleSubmitErica} round={round} handleChangeWarning={handleChangeWarning} handleChangeMessageToNorman={handleChangeMessageToNorman} handleChangeMessageToPete={handleChangeMessageToPete} levelOfWarning={levelOfWarning} messageToPete={messageToPete} messageToNorman={messageToNorman} ericaHealth={ericaHealth} players={players} clients={clients} ericaDecisions={ericaDecisions }/>,
+        <Erica2 decisionReady={decisionReady} decisionTime={decisionTime} ericaTime={ericaTime} userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} setWaitPopupErica={setWaitPopupErica} waitPopupErica={waitPopupErica} handleSubmitErica={handleSubmitErica} round={round} handleChangeWarning={handleChangeWarning} handleChangeMessageToNorman={handleChangeMessageToNorman} handleChangeMessageToPete={handleChangeMessageToPete} levelOfWarning={levelOfWarning} messageToPete={messageToPete} messageToNorman={messageToNorman} ericaHealth={ericaHealth} players={players} clients={clients} ericaDecisions={ericaDecisions }/>,
         <Erica3 GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} petePower={petePower} normanHealth={normanHealth} peteHealth={peteHealth} round={round} ericaHealth={ericaHealth} messagesStorageErica={messagesStorageErica} normanStay={normanStay} />,
     ];
     
     const normans = [
         <Norman0 step={step} />,
         <Norman1 step={step} round={round}/>,
-        <Norman2 userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} step={step} data={data} handleChangeWhichRoute={handleChangeWhichRoute} normanStay={normanStay} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} popForm={popForm} setPopForm={setPopForm} round={round} electricity={electricity} normanQuestion={normanQuestion} normanHealth={normanHealth} messageToNorman={messageToNorman} role={role} messageFromErica={messageFromErica} socket={socket} setChatData={setChatData} chatData={chatData}/>,
-        <Norman3 GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} round={round} peteHealth={peteHealth} ericaHealth={ericaHealth} whichRoute={whichRoute} normanStay={normanStay} electricity={electricity} normanHealth={normanHealth} waterDepthEndupNorman={waterDepthEndupNorman} petePower={petePower}/>,
+        <Norman2 decisionReady={decisionReady} decisionTime={decisionTime} ericaTime={ericaTime} userTaskDoneCounter={userTaskDoneCounter} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} step={step} data={data} handleChangeWhichRoute={handleChangeWhichRoute} normanStay={normanStay} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} popForm={popForm} setPopForm={setPopForm} round={round} electricity={electricity} normanQuestion={normanQuestion} normanHealth={normanHealth} messageToNorman={messageToNorman} role={role} messageFromErica={messageFromErica} socket={socket} setChatData={setChatData} chatData={chatData} />,
+        <Norman3 resultReady={resultReady} setSubmittedNorman={setSubmittedNorman} GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} round={round} peteHealth={peteHealth} ericaHealth={ericaHealth} whichRoute={whichRoute} normanStay={normanStay} electricity={electricity} normanHealth={normanHealth} waterDepthEndupNorman={waterDepthEndupNorman} petePower={petePower}/>,
     ];
     
     const petes = [
         <Pete0 step={step} />,
         <Pete1 step={step} round={round} />,
-        <Pete2 userTaskDoneCounter={userTaskDoneCounter} step={step} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} handleChangePetePower={handleChangePetePower} handleSubmitPete={handleSubmitPete} popForm={popForm} setPopForm={setPopForm} round={round} electricity={electricity} normanQuestion={normanQuestion} peteHealth={peteHealth} petePower={petePower} whichRoutePete={whichRoutePete} normanStay={normanStay} handleChangeWhichRoutePete={handleChangeWhichRoutePete} messageToPete={messageToPete} messageFromErica={messageFromErica} clients={clients}/>,
-        <Pete3 GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} round={round} normanHealth={normanHealth} ericaHealth={ericaHealth} peteHealth={peteHealth} whichRoutePete={whichRoutePete} electricity={electricity} petePower={petePower} waterDepthEndupPete={waterDepthEndupPete}/>
+        <Pete2 decisionReady={decisionReady} decisionTime={decisionTime} ericaTime={ericaTime} userTaskDoneCounter={userTaskDoneCounter} step={step} globalGame={globalGame} setGlobalGame={setGlobalGame} globalSession={globalSession} setGlobalSession={setGlobalSession} data={data} handleChangePetePower={handleChangePetePower} handleSubmitPete={handleSubmitPete} popForm={popForm} setPopForm={setPopForm} round={round} electricity={electricity} normanQuestion={normanQuestion} peteHealth={peteHealth} petePower={petePower} whichRoutePete={whichRoutePete} normanStay={normanStay} handleChangeWhichRoutePete={handleChangeWhichRoutePete} messageToPete={messageToPete} messageFromErica={messageFromErica} clients={clients} />,
+        <Pete3 resultReady={resultReady} setSubmittedPete={setSubmittedPete} GAME_ROUND={GAME_ROUND} step={step} setRound={setRound} setStep={setStep} setResultReady={setResultReady} round={round} normanHealth={normanHealth} ericaHealth={ericaHealth} peteHealth={peteHealth} whichRoutePete={whichRoutePete} electricity={electricity} petePower={petePower} waterDepthEndupPete={waterDepthEndupPete}/>
     ];
     
     const Buttons = () => (
@@ -953,6 +995,39 @@ export default function GrandGame() {
         </section>
     );
 
+    // useEffect(
+    //     ()=> {
+    //         let countTime =
+    //             setInterval(
+    //                 () => {
+
+    //                     setTime(prev => prev - 1)
+    //                 }
+    //                 , 1000);
+    //         return (() => clearInterval(countTime));
+    //     }
+    // , [])
+
+    // const [intervalId, setIntervalId] = useState(0);
+
+
+    // const handleTimer = () => {
+    //     // if (intervalId) {
+    //     //     clearInterval(intervalId);
+    //     //     setIntervalId(0);
+    //     //     return;
+    //     // }
+
+    //     const newIntervalId = setInterval(() => {
+    //         setTime(prev => prev - 1);
+    //     }, 1000);
+
+    //     setIntervalId(newIntervalId);
+    // }
+
+  
+
+
     return (
         <div className="main">
             <div className="gameframe">
@@ -971,7 +1046,7 @@ export default function GrandGame() {
                             ?
                             ericas[2]
                             :
-                        role === 'Pete' && resultReady
+                        role === 'Pete' && submittedPete
                             ? 
                             petes[3] 
                             :
@@ -983,7 +1058,7 @@ export default function GrandGame() {
                             ?
                             petes[2]
                             :
-                        normanRoles.includes(role) && resultReady
+                        normanRoles.includes(role) && submittedNorman
                             ?
                             normans[3] 
                             :
@@ -998,7 +1073,8 @@ export default function GrandGame() {
                             null
                         }
 
-                    { step !== 2 && <Buttons/> }
+                    { (step == 0 || step == 1) && <Buttons/> }
+
                 </>
                     : 
                     <Instruction updateToMongoDBGame={updateToMongoDBGame} Buttons={Buttons} normanRoles={normanRoles} step={step} normans={normans} petes={petes} ericas={ericas} yarray={yarray} snap={snap} setGlobalSession={setGlobalSession} globalSession={globalSession} setGlobalGame={setGlobalGame} globalGame={globalGame} clients={clients} axios={axios} HOST={HOST} sessionDataObject={sessionDataObject} setGameStart={setGameStart} id={id} setId={setId} canStartGame={canStartGame} setCanStartGame={setCanStartGame} game={game} setGame={setGame} socket={socket} session={session} setRole={setRole} role={role} userQuantity={userQuantity} games={games} MAX_CLIENTS={MAX_CLIENTS} MIN_CLIENTS={MIN_CLIENTS} resultReady={resultReady}/>

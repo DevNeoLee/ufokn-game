@@ -128,6 +128,30 @@ io.on("connection", socket => {
 
     socket.on("game_start", (room_name) => {
         io.in(room_name).emit('game_start');
+
+        var ericaTimeCounter = 50;
+        var ericaTimer = setInterval(function () {
+            io.sockets.emit('ericaTimeCounter', ericaTimeCounter);
+            ericaTimeCounter--
+            if (ericaTimeCounter === 0) {
+                io.sockets.emit('ericaTimeCounter', 0);
+                clearInterval(ericaTimer);
+            }
+        }, 1000);
+    })
+
+    socket.on("decisionReadyTimer", (room_name) => {
+        // io.in(room_name).emit('decisionReady');
+
+        let decisionTimeCounter = 60;
+        let decisionTimer = setInterval(function () {
+            io.sockets.emit('decisionTimeCounter', decisionTimeCounter);
+            decisionTimeCounter--
+            if (decisionTimeCounter === 0) {
+                io.sockets.emit('decisionTimeCounter', 0);
+                clearInterval(decisionTimer);
+            }
+        }, 1000);
     })
 
 
@@ -146,9 +170,9 @@ io.on("connection", socket => {
         io.in('1').emit('role', {role, id})
     })
 
-    socket.on('erica_message', (msg) => {
+    socket.on('erica_message', ({ messages, firstMessage }) => {
 
-        io.in('1').emit('erica_message', msg)
+        io.in('1').emit('erica_message', ({ messages, firstMessage }))
     })
 
     socket.on('norman_message', (data) => {

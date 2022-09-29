@@ -10,14 +10,14 @@ import EricaPopup from '../../../components/EricaPopup';
 import WaitModalErica from '../../../components/WaitModalErica';
 
 import { AiFillWechat } from 'react-icons/ai';
-
+import { BiTimer } from 'react-icons/bi';
 
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import { Link } from "react-router-dom"
 
-export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, waitPopupErica, setWaitPopupErica, players, handleSubmitErica, round, handleChangeWarning, handleChangeMessageToNorman, handleChangeMessageToPete, levelOfWarning, messageToNorman, messageToPete, ericaHealth, electricity, step, normanQuestion, normanHealth }) {
+export default function Erica2({ decisionReady, decisionTime, ericaTime, ericaDecisions, clients, userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, waitPopupErica, setWaitPopupErica, players, handleSubmitErica, round, handleChangeWarning, handleChangeMessageToNorman, handleChangeMessageToPete, levelOfWarning, messageToNorman, messageToPete, ericaHealth, electricity, step, normanQuestion, normanHealth }) {
 
     const [hover1, setHover1] = useState(false);
     const [hover2, setHover2] = useState(false);
@@ -33,7 +33,6 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
     // chatting auto scroll on the screen when the chat contents are more than screen size
     const containerRef = useRef(null);
 
-    console.log('erica messages !: ', ericaDecisions)
     // const handleMouseEnter1 = () => {
     //     setGraphData([
     //               {
@@ -370,8 +369,8 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
     return (
         <>  
             <div className={ popup && round == 1 ? `ericaPopup` : `ericaPopup ericaPopClose`}><EricaPopup setPopup={setPopup} /></div>
-            <div className={waitPopupErica ? `waitModal` : `waitModal waitModalClose`}><WaitModalErica setWaitPopupErica={setWaitPopupErica} /></div>
-            {userTaskDoneCounter}
+            {/* <div className={waitPopupErica ? `waitModal` : `waitModal waitModalClose`}><WaitModalErica setWaitPopupErica={setWaitPopupErica} /></div> */}
+            {/* {userTaskDoneCounter} */}
             <div className="gameBlockContainerErica">
                 <div className="topContainerErica">
                     <div className="leftContainerErica">
@@ -415,6 +414,14 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
                     </div>
                     <div className="rightContainerErica">
                         <div className="gameBlock">
+                            {ericaTime != 0 && decisionReady == false && <div className="timerContainer">
+                                < BiTimer size={50} color="white" />
+                                <div> {ericaTime} S</div>
+                            </div>}
+                            {decisionReady == true && <div className="timerContainer">
+                                <BiTimer size={50} color="white" />
+                                <div>{decisionTime} S</div>
+                            </div>}
                             <div className="gameRound">
                                 <h2>Round {round} Clients: {clients}</h2>
                             </div>
@@ -552,7 +559,7 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
                         <div className="ericaform">
                             <Form className="ericaFormInsideWrapper" onSubmit={handleSubmitErica}>
                                 <div className="ericaFormInsideSection">
-                                    <Form.Group className="mb-3" controlId="exampleTextAreaErica" id="erica_form_section1">
+                                    <Form.Group className="" controlId="exampleTextAreaErica" id="erica_form_section1">
                                         <Form.Label>Level of Flood Warning Issued</Form.Label>
                                         <Form.Control required as="select" name="source" onChange={handleChangeWarning} value={levelOfWarning}>
                                             <option value="">Level of flood warning issued</option>
@@ -568,12 +575,12 @@ export default function Erica2({ ericaDecisions, clients, userTaskDoneCounter, g
                                         <Form.Control required as="textarea" rows={3} onChange={handleChangeMessageToPete} value={messageToPete}/>
                                     </Form.Group>
                                 </div>
-
                                 <Form.Group className="mb-3" controlId="exampleTextAreaErica" id="erica_form_section3">
                                     <Form.Label>Message to All Residents</Form.Label>
                                     <Form.Control required as="textarea" rows={3} onChange={handleChangeMessageToNorman} value={messageToNorman} className="mb-3"/>
                                     <Button type="submit">Send</Button>
                                 </Form.Group>
+
                             </Form>
                         </div>
                     </div>

@@ -6,8 +6,9 @@ import { useEffect } from "react";
 
 import { useTransition, useSpring, animated } from "react-spring";
 
+import WaitResultModal from "../../../components/waitResultPopup";
 
-export default function Pete3({ GAME_ROUND, setRound, setStep, setResultReady, normanHealth, petePower, ericaHealth, round, peteHealth, whichRoutePete, electricity, normanStay, waterDepthEndupPete }) {
+export default function Pete3({ resultReady, setSubmittedPete, GAME_ROUND, setRound, setStep, setResultReady, normanHealth, petePower, ericaHealth, round, peteHealth, whichRoutePete, electricity, normanStay, waterDepthEndupPete }) {
     const transition = useTransition(true, {
         from: { x: 500, y: 0, opacity: 0 },
         enter: { x: 0, y: 0, opacity: 1 },
@@ -28,24 +29,24 @@ export default function Pete3({ GAME_ROUND, setRound, setStep, setResultReady, n
     }
 
     useEffect(() => {
+        if (resultReady) {
+            const interval = setTimeout(() => {
+             
+                console.log('round from Pete3 before: ', round)
+    
+                if (round === GAME_ROUND ) {
+                    navigate('/instructionformpostgame')
+                }
+                setRound(prevround => prevround + 1)
+                setStep(prev => prev + 1);
+                setResultReady(false);
+                setSubmittedPete(false);
+                console.log('round from Pete3 after: ', round)
+            }, 5000);
+            return () => clearTimeout(interval)
+        }
 
-        const interval = setTimeout(() => {
-         
-
-
-            console.log('round: ', round)
-            console.log('Game_round: ', GAME_ROUND)
-
-            if (round === GAME_ROUND ) {
-                navigate('/instructionformpostgame')
-            }
-
-            setStep(1);
-            setResultReady(false);
-            setRound(prevround => prevround + 1)
-        }, 5000);
-        return () => clearTimeout(interval)
-    }, [])
+    }, [resultReady])
 
     return (
         <>
@@ -54,6 +55,7 @@ export default function Pete3({ GAME_ROUND, setRound, setStep, setResultReady, n
                     <animated.h2 style={style}>Round {round} Result</animated.h2>
                 )}
             </div>
+                {!resultReady && <WaitResultModal />}
         <div className="resultWrapper">
             <div className="resultContainer">
                 {transition2((style, item) =>
@@ -116,7 +118,6 @@ export default function Pete3({ GAME_ROUND, setRound, setStep, setResultReady, n
                                 </tr>
                             </tbody>
                         </Table>
-                        <div className="buttons" style={{ margin: "15px 80px" }}><Button size="lg" onClick={handleNextRound}>Next</Button></div>
                     </animated.div>
                 )}
             </div>

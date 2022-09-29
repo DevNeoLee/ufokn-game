@@ -14,10 +14,11 @@ import DecisionControl from '../../../components/DecisionControl';
 import React, { PureComponent } from 'react';
 import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { AiFillWechat } from 'react-icons/ai';
+import { BiTimer } from 'react-icons/bi';
 
 import { Link } from "react-router-dom"
 
-export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, handleChangeWhichRoutePete, whichRoutePete, handleChangePetePower, handleSubmitPete, popForm, setPopForm, messageFromErica, round, electricity, messageToPete, step, normanQuestion, petePower, peteHealth, clients }) {
+export default function Pete2({ decisionReady, decisionTime, ericaTime, userTaskDoneCounter, globalGame, setGlobalGame, globalSession, setGlobalSession, data, handleChangeWhichRoutePete, whichRoutePete, handleChangePetePower, handleSubmitPete, popForm, setPopForm, messageFromErica, round, electricity, messageToPete, step, normanQuestion, petePower, peteHealth, clients }) {
 
     const [hover1, setHover1] = useState(false);
     const [hover2, setHover2] = useState(false);
@@ -57,6 +58,8 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
                 behavior: "smooth"
             })
         }
+        console.log('messageFromErica: ', messageFromErica)
+
     }, [containerRef2, messageFromErica])
 
     const handlePeteForm = () => {
@@ -379,12 +382,13 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
 
     return (
         <>
-            {messageFromErica[0]?.toPete && < DecisionControl handleDecisionBox={handleDecisionBox} />}
+            {(messageFromErica[round]?.[0] != null || ericaTime == 0 ) && < DecisionControl handleDecisionBox={handleDecisionBox} />}
+
             <div className={popup ? `petePopup` : `petePopup petePopClose`}><PetePopup setPopup={setPopup} /></div>
             {/* <div className={popForm ? `peteForm` : `peteForm peteFormClose`}><PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete}  handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower}/></div> */}
             <div className={popForm ? `peteForm` : `peteForm peteFormClose`}>{popForm && <PeteForm handleChangeWhichRoutePete={handleChangeWhichRoutePete} whichRoutePete={whichRoutePete} handleSubmitPete={handleSubmitPete} handleChangePetePower={handleChangePetePower} petePower={petePower} setPopForm={setPopForm} handlePeteForm={handlePeteForm} handleFormClose={handleFormClose} />}</div>
             <div className={waitPopup && round == 1 ? `waitModal` : `waitModal waitModalClose`}><WaitModalPete handleWaitModal={handleWaitModal} /></div>
-            {userTaskDoneCounter}
+            {/* {userTaskDoneCounter} */}
 
             <div className="gameBlockContainer">
                 <div className="leftContainer">
@@ -487,8 +491,16 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
                 </div>
                 <div className="rightContainer">
                     <div className="gameBlock">
+                        {ericaTime != 0 && decisionReady == false && <div className="timerContainer">
+                            <BiTimer size={50} color="white" />
+                            <div>{ericaTime} S</div>
+                        </div>}
+                        { decisionReady == true && <div className="timerContainer">
+                            <BiTimer size={50} color="white" />
+                            <div>{decisionTime} S</div>
+                        </div>}
                         <div className="gameRound">
-                            <h1>Round {round} clients: {clients} </h1>
+                            <h2>Round {round}</h2>
                         </div>
                         <div className="normanMapContainer">
                             <div className="normanmapimg"><img src="/roundmap.png" /></div>
@@ -587,7 +599,7 @@ export default function Pete2({ userTaskDoneCounter, globalGame, setGlobalGame, 
                                 <div className="ericaChatHistoryNorman">
                                     <AiFillWechat size={30} /><span>Local Emergency App, Message from Emergency Manager</span>
                                     <div className="ericaChatScreenNorman" style={{ fontSize: "0.9rem" }} ref={containerRef2}>
-                                        {messageFromErica[round] && messageFromErica[round].map((data, i) => (
+                                        {messageFromErica[round] && messageFromErica[round]?.map((data, i) => (
                                             <div key={i}>
                                                 <div>Message {i + 1}:</div>
                                                 <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem", marginRight: "1rem" }}>{data.levelOfWarning}</span></span>

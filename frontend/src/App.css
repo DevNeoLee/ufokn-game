@@ -855,6 +855,17 @@ h2 {
   height: 450px;
 }
 
+.timerContainer {
+  width: 5rem;
+  height: 5rem;
+  background-color: #2ebe7e;
+  position: absolute;
+  text-align: center;
+  /* padding-right: 2rem; */
+  padding: 0.3rem;
+  border-radius: 25%;
+}
+
 .gameBlock8 {
   /* margin: 0 auto; */
   /* background-color: lightblue; */
@@ -1318,7 +1329,7 @@ h2 {
 
 .ericaform label {
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 #erica_form_section1,
@@ -1331,10 +1342,11 @@ h2 {
 
 .ericaFormInsideSection {
   display: flex;
+  /* background-color: blue; */
 }
 
 .ericaFormInsideWrapper {
-  /* background-color: lightblue; */
+  /* background-color: red; */
   display: flex;
   width: 800px;
   justify-content: center;
@@ -2008,6 +2020,12 @@ h2 {
   margin-bottom: 40px;
 }
 
+.waitResult {
+  width: 100%;
+  position:absolute;
+  z-index: 10;
+}
+
 @media(max-width: 1300px) {
  * {
    /* background-color: lightcoral; */
@@ -2118,6 +2136,21 @@ h2 {
     color: rgb(27, 3, 208);
     text-align: left;
   }
+
+    .ericaChatHistoryNorman {
+      /* background-color: blue; */
+      left: 60px;
+      width: 450px;
+
+    }
+  
+    .ericaChatScreenNorman {
+      padding: 0.2rem;
+      width: 450px;
+
+      inline-size: 440px;
+      /* background-color: blue; */
+    }
 }
 
 @media(max-width: 800px) {
@@ -2273,6 +2306,21 @@ h2 {
       .ericaFormInsideWrapper {
         width: 100%;
       }
+
+      .ericaChatHistoryNorman {
+        /* background-color: blue; */
+        left: 60px;
+        width: 400px;
+
+      }
+
+      .ericaChatScreenNorman {
+        padding: 0.2rem;
+        width: 400px;
+
+        inline-size: 390px;
+        /* background-color: blue; */
+      }
 }
 
 
@@ -2297,6 +2345,21 @@ h2 {
     margin: 0px;
     padding: 0px;
   }
+
+  .ericaChatHistoryNorman {
+    /* background-color: blue; */
+    left: 60px;
+    width: 340px;
+
+  }
+
+  .ericaChatScreenNorman {
+    padding: 0.2rem;
+    width: 340px;
+
+    inline-size: 330px;
+    /* background-color: blue; */
+  }
 }
 
 @media(max-width: 503px) {
@@ -2307,6 +2370,39 @@ h2 {
   .general {
     /* background-color: red; */
     width: 550px;
+  }
+
+     .ericaChatHistoryNorman {
+       /* background-color: blue; */
+       left: 60px;
+       width: 320px;
+  
+     }
+  
+     .ericaChatScreenNorman {
+       padding: 0.2rem;
+       width: 320px;
+  
+       inline-size: 310px;
+       /* background-color: blue; */
+     }
+}
+
+@media(max-width: 503px) {
+
+  .ericaChatHistoryNorman {
+    /* background-color: blue; */
+    left: 60px;
+    width: 230px;
+
+  }
+
+  .ericaChatScreenNorman {
+    padding: 0.2rem;
+    width: 230px;
+
+    inline-size: 220px;
+    /* background-color: blue; */
   }
 }
 

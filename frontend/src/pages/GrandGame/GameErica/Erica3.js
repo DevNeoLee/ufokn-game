@@ -31,17 +31,16 @@ export default function Erica3({ GAME_ROUND, setRound, setStep, setResultReady, 
  
         const interval = setTimeout(() => {
       
-            console.log('round: ', round)
-            console.log('Game_round: ', GAME_ROUND)
+            console.log('round from Erica3 before: ', round)
 
             if (round === GAME_ROUND  ) {
                 navigate('/instructionformpostgame')
             }
 
-            setStep(1);
+            setStep(prev => prev + 1);
             setResultReady(false);
             setRound(prevround => prevround + 1)
-
+            console.log('round from Erica3 after: ', round)
         }, 5000);
         return () => clearTimeout(interval)
     }, [])
@@ -116,9 +115,6 @@ export default function Erica3({ GAME_ROUND, setRound, setStep, setResultReady, 
                                 </tr>
                             </tbody>
                         </Table>
-                        <Button size="lg" style={{ fontSize: "1.3rem" }} onClick={handleNextRound}>Next</Button>
-
-                        {/* <div className="buttons" style={{ margin: "15px 80px" }}><Button size="lg" onClick={() => navigate('/gameend')}>Next</Button></div> */}
                     </animated.div>
                 )}
             </div>

@@ -17,10 +17,11 @@ import { AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tool
 import { Link } from "react-router-dom"
 
 import { AiFillWechat } from 'react-icons/ai';
+import { BiTimer } from 'react-icons/bi';
 import { Socket } from 'socket.io-client';
 
 
-export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame, setGlobalSession, globalSession, data, handleChangeWhichRoute, handleSubmitNorman, handleChangeNormanStay, normanStay, popForm, setPopForm, messageFromErica, round, role, electricity, messageToNorman, step, normanQuestion, normanHealth, socket, setChatData, chatData }) {
+export default function Norman2({ decisionReady, decisionTime, ericaTime, userTaskDoneCounter, globalGame, setGlobalGame, setGlobalSession, globalSession, data, handleChangeWhichRoute, handleSubmitNorman, handleChangeNormanStay, normanStay, popForm, setPopForm, messageFromErica, round, role, electricity, messageToNorman, step, normanQuestion, normanHealth, socket, setChatData, chatData }) {
 
     const [hover1, setHover1] = useState(false);
     const [hover2, setHover2] = useState(false);
@@ -59,9 +60,6 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
 
     }, [])
 
-    const handleNormanForm = () => {
-
-    }
 
     const handleWaitModal = () => {
         // console.log("wait Modal clicked!")
@@ -94,7 +92,11 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                 behavior: "smooth"
             })
         }
+
+        console.log('messageFromErica: ', messageFromErica)
+
     }, [containerRef2, messageFromErica])
+
     // const getHouseChartData = () => {
 
     //     let houseChartdata = data[`round${round}`][3];
@@ -389,15 +391,15 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
         console.log('hello there')
         setPopForm(prev => !prev)
     }
-    
-    console.log('messageFromErica[round]: ', messageFromErica[round])
+
     return (
         <>
-            {messageFromErica[round].toNorman && < DecisionControl  handleDecisionBox={handleDecisionBox} />}
+            {(messageFromErica[round]?.[0] != null || ericaTime == 0 ) && <DecisionControl  handleDecisionBox={handleDecisionBox} />}
+
             <div className={popup ? `normanPopup` : `normanPopup normanPopClose`}><NormanPopup setPopup={setPopup} /></div>
-            <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleNormanForm={handleNormanForm} handleFormClose={handleFormClose}/></div>
+            <div className={popForm ? `normanForm` : `normanForm normanFormClose`}><NormanForm handleChangeWhichRoute={handleChangeWhichRoute} handleSubmitNorman={handleSubmitNorman} handleChangeNormanStay={handleChangeNormanStay} normanStay={normanStay} setPopForm={setPopForm} handleFormClose={handleFormClose}/></div>
             <div className={waitPopup && round == 1 ? `waitModal` : `waitModal waitModalClose`}><WaitModalNorman handleWaitModal={handleWaitModal} /></div>
-            {userTaskDoneCounter}
+            {/* {userTaskDoneCounter} */}
 
             <div className="gameBlockContainer">
                 <div className="leftContainer">
@@ -493,9 +495,17 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                 </div>  
                 <div className="rightContainer">
                     <div className="gameBlock">
-                        {/* <div className="gameRound">
+                        {ericaTime != 0 && decisionReady == false && <div className="timerContainer">
+                            <BiTimer size={50} color="white" />
+                            <div>{ericaTime} S</div>
+                        </div>}
+                        {decisionReady == true && <div className="timerContainer">
+                            <BiTimer size={50} color="white" />
+                            <div>{decisionTime} S</div>
+                        </div>}
+                        <div className="gameRound">
                             <h2>Round {round}</h2>
-                        </div> */}
+                        </div>
                         <div className="chattingContainer">
                             <AiFillWechat size={30} color="white" /><span style={{ color: "white" }}> Neighborhood Chat App</span>
                             <h6>Discuss with other Normans (Neighbors)</h6>
@@ -634,7 +644,7 @@ export default function Norman2({ userTaskDoneCounter, globalGame, setGlobalGame
                                     <div className="ericaChatHistoryNorman">
                                     <AiFillWechat size={30} /><span>Local Emergency App, Message from Emergency Manager</span>
                                     <div className="ericaChatScreenNorman" style={{ fontSize: "0.9rem" }} ref={containerRef2}>
-                                        {messageFromErica[round] && messageFromErica[round].map((data, i) => (
+                                        {messageFromErica[round] && messageFromErica[round]?.map((data, i) => (
                                             <div key={i}>
                                                 <div>Message {i + 1}:</div>
                                                 <span style={{ fontSize: "0.8rem", color: 'blue', minWidth: "200px", backgroundColor: "white" }}>Level of Warning: <span style={{ fontSize: "0.9rem", color: 'black', minWidth: "200px", backgroundColor: "white", marginLeft: "0.3rem", marginRight: "1rem" }}>{data.levelOfWarning}</span></span>

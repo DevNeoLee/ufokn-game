@@ -5,9 +5,10 @@ import { Form, Button, ProgressBar, Table } from "react-bootstrap";
 import { useEffect } from "react";
 
 import { useTransition, useSpring, animated } from "react-spring";
+import WaitResultModal from "../../../components/waitResultPopup";
 
 
-export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady, ericaHealth, petePower, peteHealth, whichRoute, normanStay, round, normanHealth, waterDepthEndupNorman, electricity}) {
+export default function Norman3({ resultReady, setSubmittedNorman, GAME_ROUND, setRound, setStep, setResultReady, ericaHealth, petePower, peteHealth, whichRoute, normanStay, round, normanHealth, waterDepthEndupNorman, electricity}) {
     const transition = useTransition(true, {
         from: { x: 500, y: 0, opacity: 0 },
         enter: { x: 0, y: 0, opacity: 1 },
@@ -23,7 +24,6 @@ export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady,
 
     const navigate = useNavigate();
 
-    console.log("round: ", round)
     console.log("normanStay: ", normanStay)
     console.log("whichRoute: ", whichRoute)
     console.log("normanHealth: ", normanHealth)
@@ -35,22 +35,24 @@ export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady,
     }
 
     useEffect(() => {
+        if (resultReady) {
+            const interval = setTimeout(() => {
 
-        const interval = setTimeout(() => {
+                console.log('round from Norman3 before: ', round)
 
-            console.log('round: ', round)
-            console.log('Game_round: ', GAME_ROUND)
-            if (round === GAME_ROUND ) {
-                navigate('/instructionformpostgame')
-            }
-            setRound(prevround => prevround + 1)
-            setStep(1);
-            setResultReady(false);
+                if (round === GAME_ROUND) {
+                    navigate('/instructionformpostgame')
+                }
+                setRound(prevround => prevround + 1)
+                setStep(prev => prev + 1);
+                setResultReady(false);
+                setSubmittedNorman(false);
+                console.log('round from Norman3 after: ', round)
+            }, 5000);
+            return () => clearTimeout(interval)
+        }
 
-            
-        }, 5000);
-        return () => clearTimeout(interval)
-    }, [])
+    }, [resultReady])
 
     return (
         <>
@@ -59,6 +61,7 @@ export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady,
                     <animated.h2 style={style}>Round {round} Result</animated.h2>
                 )}
             </div>
+                {!resultReady && <WaitResultModal />}
         <div className="resultWrapper">
             <div className="resultContainer">
                 {transition2((style, item) =>
@@ -127,7 +130,6 @@ export default function Norman3({ GAME_ROUND, setRound, setStep, setResultReady,
                                 </tr>
                             </tbody>
                         </Table>
-                        <div className="buttons" style={{ margin: "15px 80px" }}><Button size="lg" onClick={handleNextRound }>Next</Button></div>
                     </animated.div>
                 )}
             </div>
