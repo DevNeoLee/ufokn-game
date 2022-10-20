@@ -45,8 +45,8 @@ export default function Erica2({ decisionReady, decisionTime, ericaTime, ericaDe
     // }
 
     useEffect(() => {
-        console.log('globalGame: ', globalGame)
-        console.log('globalSession: ', globalSession)
+        // console.log('globalGame: ', globalGame)
+        // console.log('globalSession: ', globalSession)
 
     }, [])
 
@@ -71,7 +71,7 @@ export default function Erica2({ decisionReady, decisionTime, ericaTime, ericaDe
     }
 
     const handleWaitModal = () => {
-        console.log("wait Modal clicked!")
+        // console.log("wait Modal clicked!")
         setWaitPopupErica(false)
     }
 

@@ -223,21 +223,24 @@ export default function GrandGame() {
     useEffect(() => {
         const socket = io()
         setSocket(socket)
-        console.log("================= socket open ===========")
+        // console.log("================= socket open ===========")
         return () => {
             setSocket(null);
-            console.log("================= socket close ===========")
+            // console.log("================= socket close ===========")
         }
     }, [])
 
+    useEffect(() => {
+        console.log('normanDecisions from useEffect: ', normanDecisions)
+    }, [normanDecisions])
 
     useEffect(() => {
         const getInitialSession = async () => {
 
         let s = await sessionStorage.getItem('ufoknSession')
-        console.log("ufoknSession: ", s)
+        // console.log("ufoknSession: ", s)
         if (!s ) {
-            console.log('No ufoknSession yet')
+            // console.log('No ufoknSession yet')
             s = await createSession()
 
             setSession(s)
@@ -279,13 +282,13 @@ export default function GrandGame() {
 
     useEffect(() => {
         sessionStorage.setItem('ufoknSession', JSON.stringify(globalSession))
-        console.log('Global Session from userEffect[glbalSession]; ', globalSession)
+        // console.log('Global Session from userEffect[glbalSession]; ', globalSession)
    
     }, [globalSession])
 
     useEffect(()=> {
         sessionStorage.setItem('ufoknGame', JSON.stringify(globalGame))
-        console.log('Global Game from userEffect[glbalGame]; ', globalGame)
+        // console.log('Global Game from userEffect[glbalGame]; ', globalGame)
 
     }, [globalGame])
 
@@ -339,32 +342,27 @@ export default function GrandGame() {
             })
 
             socket.on("join_room", (room_name, player_name, game, room_size) => {
-                console.log(`New player joined a room #${room_name}: `, game, player_name)
-                //위의 스텝은 아마 거의 필요없어 집니다, 글로벌 사용하니까요.
+                // console.log(`New player joined a room #${room_name}: `, game, player_name)
                 setGlobalGame(game);
                 sessionStorage.setItem('ufoknGame', game);
                 setGame(game)
                 setGames([...games, game])
-                console.log('game: ', game)
-                console.log('room_size: ', room_size)
+                // console.log('game: ', game)
+                // console.log('room_size: ', room_size)
                 checkGameStart(room_size)
     
                 setRoomOneSize(room_size)
             })
-    
-            //매번 글로벌게임 압데이트를 모든 참여 유저데이타에 해줌
+
             socket.on("game_update", (data) => {
-                console.log('game_update socket: ', data)
+                // console.log('game_update socket: ', data)
                 setGame(data)
                 setGlobalGame(data);
             })
     
             socket.on("game_start", () => {
                 const gameOn = async () => {
-                    
                     setGameStart(true);
-
-                    
                 }
                 // let timeInterval = setInterval(() => setTime(prev => prev - 1), 1000);
                 gameOn();
@@ -395,20 +393,16 @@ export default function GrandGame() {
                 // console.log('Erica message from Erica received: ', messages)
                 // setMessageFromErica(messages)
                 setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [messages.round]: [...prev.erica_messages[messages.round], messages] } }))
-                console.log('hmm 1')
-                console.log('messagefromErica GG socket: ', messageFromErica)
-                console.log('messages: ', messages)
-                console.log('round Erica_message GG websocket: ', messages.round)
+        
                 setMessageFromErica(prev => ({ ...prev, [messages.round]: [...prev[messages.round], messages] }));
-                console.log('hmm 2')
-                // console.log("chatData Updated: ", data)
+           
 
                 // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [messages.round]: messages } }))
                 // setUserTaskDoneCounter(prev => prev + 1)
 
                 
-                console.log('decisionReady: ', decisionReady);
-                console.log('messageFromErica[round].length: ', messageFromErica[messages.round].length)
+                // console.log('decisionReady: ', decisionReady);
+                // console.log('messageFromErica[round].length: ', messageFromErica[messages.round].length)
                 
                 if (firstMessage )  {
                     socket.emit('decisionReadyTimer', "1")
@@ -426,10 +420,16 @@ export default function GrandGame() {
                 setDecisionReady(true);
             })
     
+            // const normanDecision = { stay: normanStay, whichRoute: whichRoute, role: role, round: round };
             // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
+  
+            // setNormanDecisions(prev => ({ ...prev, [round]: [...prev[round], normanDecision] }))
             socket.on("norman_message", (data => {
+
                 // console.log('Norman data from Norman received: ', data)
-    
+                // console.log('나의 롤: ', role);
+                // console.log('data.role: ', data.role)
+                setNormanDecisions(prev => ({ ...prev, [data.round]: [...prev[data.round], data] }))
                 // setGlobalGame(prev => ({ ...prev, pete_decisions: { ...prev.pete_decisions, [round]: data } }))
                 // setGlobalGame(prev => ({ ...prev, erica_messages: { ...prev.erica_messages, [round]: msg } }))
     
@@ -457,8 +457,8 @@ export default function GrandGame() {
     
             socket.on("norman_chat", (data) => {
                 // console.log('Norman is chatting on frontend received: ', data.message);
-                console.log('chat data received: ', data)
-                console.log('chat round received: ', data.round)
+                // console.log('chat data received: ', data)
+                // console.log('chat round received: ', data.round)
                 setChatData(prev => ({ ...prev, [data.round]: [...prev[data.round], data] }));
     
                 setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [data.round]: [...prev.chatting[data.round], data] } }))
@@ -500,23 +500,25 @@ export default function GrandGame() {
                 (userTaskDoneCounter !== 0 && roomOneSize === userTaskDoneCounter + 2)) {
                 setPopForm(false)
     
-                //// calculate socres here///////
-                // calculateScore(normanDecisions, peteDecisions)
+                calculateScore(normanDecisions, peteDecisions)
     
+                // console.log('norman Decisions ************* : ', normanDecisions)
+                // console.log('pete Decisions **********: ', peteDecisions)
+
                 //// Mongo Game Update /////
                 await updateToMongoDBGame(globalGame)
     
-                // render result page /////
+                // 게임점수 레디//
                 setResultReady(true)
     
                 // sessionStorage에다가 저장해 주어 이걸 다음 다른 페이지들에게 정확히 패스해 줄수 있다. 
                 sessionStorage.setItem('ufoknGame', globalGame)
                 
 
-                console.log('sessonStorage, game: ', sessionStorage.getItem('ufoknGame'))
+                // console.log('sessonStorage, game: ', sessionStorage.getItem('ufoknGame'))
 
                 ///그리고 모든 이전 스테이트 최기화!
-                setPeteDecisions([])
+                // setPeteDecisions([])
                 setWhichRoutePete('')
                 setPetePower('')
                 setWhichRoute('')
@@ -531,7 +533,7 @@ export default function GrandGame() {
                 setDecisionReady(false)
    
             } else {
-                console.log("result page is not ready yet: " + 'NormanDecisions: ' + JSON.stringify(normanDecisions) + 'PeteDecisions: ' + JSON.stringify(peteDecisions))
+                // console.log("result page is not ready yet: " + 'NormanDecisions: ' + JSON.stringify(normanDecisions) + 'PeteDecisions: ' + JSON.stringify(peteDecisions))
             } 
         }
 
@@ -550,7 +552,7 @@ export default function GrandGame() {
             .then(data => {
 
                 sessionStorage.setItem('ufoknSession', JSON.stringify(data));
-                console.log('New Session created in mongoDB, saved in SessionStorage on GrandGame page:', data)
+                // console.log('New Session created in mongoDB, saved in SessionStorage on GrandGame page:', data)
                 return data
             })
             .catch(err => console.log(err))
@@ -595,18 +597,9 @@ export default function GrandGame() {
 
     const calculateScore = (normanDecisions, peteDecisions) => {
 
-        console.log('norman Decisions: ', normanDecisions)
-        console.log('pete Decisions: ', peteDecisions)
         //지금 라운드의 자료
         const stayedHome = normanDecisions[round - 1]?.stay === 'stayon' 
         const stayedHomePete = peteDecisions[round - 1]?.stay === 'poweron'
-
-        console.log('stayed home ? : ', stayedHome)
-        console.log('stayed home pete? : ', stayedHomePete)
-
-
-        // console.log('노만의 결정은 ? : ', normanDecisions[round - 1].stay)
-        // console.log('pete의 결정은 ? : ', peteDecisions[round - 1].stay)
 
         let travelRisk;
         let travelRiskPete;
@@ -637,7 +630,7 @@ export default function GrandGame() {
 
             //find the water depth you end up, data array 에서 찾아야함
             //다음 라운드의 current wtaer depth 값임
-            data[`round${round + 1}`].map(ele => {
+            data[`round${round + 1}`]?.map(ele => {
                 if (ele.name.toLowerCase() === decidedAreaNorman.toLowerCase()) {
                     setWaterDepthEndupNorman(ele['Current Water Depth'])
                 }
@@ -651,7 +644,7 @@ export default function GrandGame() {
             }
             
 
-            console.log('travelRisk: ', travelRisk)
+            // console.log('travelRisk: ', travelRisk)
             // console.log('powerOutrageRisk: ', powerOutrageRisk)
             // console.log('criticalRisk: ', criticalRisk)
             // console.log('decidedAreaNorman: ', decidedAreaNorman)
@@ -666,7 +659,7 @@ export default function GrandGame() {
 
             powerOutrageRisk = 0;
 
-            data[`round${round + 1}`].map(ele => {
+            data[`round${round + 1}`]?.map(ele => {
                 if (ele.name.toLowerCase() === decidedAreaNorman) {
                     setWaterDepthEndupNorman(ele['Current Water Depth'])
                 }
@@ -680,7 +673,7 @@ export default function GrandGame() {
             }
 
 
-            console.log('======== went out norman =========')
+            // console.log('======== went out norman =========')
 
             // console.log('travelRisk: ', travelRisk)
             // console.log('powerOutrageRisk: ', powerOutrageRisk)
@@ -691,13 +684,13 @@ export default function GrandGame() {
 
         let changedHealth = normanHealth - travelRisk - powerOutrageRisk - criticalRisk;
 
-        console.log('changed Health norman: ', changedHealth)
+        // console.log('changed Health norman: ', changedHealth)
 
         setNormanHealth(prev => 
             prev - travelRisk - powerOutrageRisk - criticalRisk
         )
 
-        console.log('normanHealth: ', normanHealth)
+        // console.log('normanHealth: ', normanHealth)
 
         setSession(prev => 
             ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: { ...prev.your_decisions[round], health: changedHealth }} } )
@@ -723,7 +716,7 @@ export default function GrandGame() {
 
             //find the water depth you end up, data array 에서 찾아야함
             //다음 라운드의 current wtaer depth 값임
-            data[`round${round + 1}`].map(ele => {
+            data[`round${round + 1}`]?.map(ele => {
 
                 // console.log("ele.name.toLowerCase(): ", ele.name.toLowerCase())
                 // console.log(" decidedAreaPete.toLowerCase(): ", decidedAreaPete.toLowerCase())
@@ -758,7 +751,7 @@ export default function GrandGame() {
 
             // console.log("decidedAreaPete: ", decidedAreaPete)
 
-            data[`round${round + 1}`].map(ele => {
+            data[`round${round + 1}`]?.map(ele => {
                 if (ele.name?.toLowerCase() === decidedAreaPete?.toLowerCase()) {
                     setWaterDepthEndupPete(ele['Current Water Depth'])
                 }
@@ -781,7 +774,7 @@ export default function GrandGame() {
             // console.log('waterDepthEndupPete: ', waterDepthEndupPete)
         }
 
-        console.log("hmm: ", 100 - travelRiskPete - powerOutrageRisk - criticalRiskPete)
+        // console.log("hmm: ", 100 - travelRiskPete - powerOutrageRisk - criticalRiskPete)
 
         setPeteHealth(prev =>
             (prev - travelRiskPete - powerOutrageRisk - criticalRiskPete)
@@ -790,10 +783,10 @@ export default function GrandGame() {
 
         changedHealth = peteHealth - travelRisk - powerOutrageRisk - criticalRisk;
 
-        console.log('changed Health pete: ', changedHealth)
+        // console.log('changed Health pete: ', changedHealth)
 
 
-        console.log('peteHealth: ', peteHealth)
+        // console.log('peteHealth: ', peteHealth)
 
         setSession(prev =>
             ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: { ...prev.your_decisions[round], health: changedHealth } } })
@@ -804,13 +797,13 @@ export default function GrandGame() {
     // normanDecisions = { 1: [], 2: [], 3: [], 4: [] }
     const handleSubmitPete = async (e) => {
         setPopForm(false)
-        console.log('pete just submitted his decison form: ')
+        // console.log('pete just submitted his decison form: ')
         e.preventDefault()
 
         const peteDecision = { stay: petePower, whichRoute: whichRoutePete, role: 'pete', round: round }
 
 
-        setPeteDecisions(prev => ({...prev, [round]: peteDecision}));
+        // setPeteDecisions(prev => ({...prev, [round]: peteDecision}));
         setElectricity(petePower)
 
         setGlobalSession(prev => ({...prev, your_decisions: {...prev.your_decisions, [round]: peteDecision }}))
@@ -821,7 +814,7 @@ export default function GrandGame() {
         // sessionStorage에다가 저장해 주어 이걸 다음 다른 페이지들에게 정확히 패스해 줄수 있다. 
         sessionStorage.setItem('ufoknSession', JSON.stringify({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: peteDecision } }))
 
-        console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
+        // console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
 
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: peteDecision } })
         setSubmittedPete(true);
@@ -830,13 +823,13 @@ export default function GrandGame() {
 
     const handleChangePetePower = (e) => {
         setPetePower(e.target.value)
-        console.log('pete power: ', e.target.value)
+        // console.log('pete power: ', e.target.value)
 
     }
 
     const handleChangeWhichRoutePete =(e) => {
         setWhichRoutePete(e.target.value)
-        console.log('which route pete: ', e.target.value)
+        // console.log('which route pete: ', e.target.value)
 
     }
 
@@ -848,8 +841,8 @@ export default function GrandGame() {
 
         const normanDecision = { stay: normanStay, whichRoute: whichRoute, role: role, round: round };
 
-        console.log('normanDecision: ', normanDecision);
-        setNormanDecisions(prev => ({...prev, [round]: [...prev[round], normanDecision ]}))
+        // console.log('normanDecision: ', normanDecision);
+        // setNormanDecisions(prev => ({...prev, [round]: [...prev[round], normanDecision ]}))
         // setNormanStay(true)
         // setWhichRoute('')
 
@@ -863,7 +856,7 @@ export default function GrandGame() {
         // sessionStorage에다가 저장해 주어 이걸 다음 다른 페이지들에게 정확히 패스해 줄수 있다. 
         sessionStorage.setItem('ufoknSession', JSON.stringify({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: normanDecision } }))
 
-        console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
+        // console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
 
         //Update to MongoDB
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: normanDecision } })
@@ -892,12 +885,12 @@ export default function GrandGame() {
 
         let firstMessage = ericaDecisions[round].length == 0;
 
-        console.log('ericaDecisions[round].length == 0 : ', ericaDecisions[round].length == 0)
-        console.log('firstMessage: ', firstMessage)
+        // console.log('ericaDecisions[round].length == 0 : ', ericaDecisions[round].length == 0)
+        // console.log('firstMessage: ', firstMessage)
 
         setDecisionReady(true);
         setEricaDecisions(prev => ({ ...prev, [round]: [...prev[round], messages] }));
-        console.log('ericaDecisions: ', ericaDecisions)
+        // console.log('ericaDecisions: ', ericaDecisions)
         setGlobalSession(prev => ({...prev, your_decisions: {...prev.your_decisions, [round]: messages}}))
 
         setSession(prev => ({ ...prev, your_decisions: { ...prev.your_decisions, [round]: messages } }))
@@ -907,7 +900,7 @@ export default function GrandGame() {
         // sessionStorage에다가 저장해 주어 이걸 다음 다른 페이지들에게 정확히 패스해 줄수 있다. 
         sessionStorage.setItem('ufoknSession', JSON.stringify({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: messages } }))
 
-        console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
+        // console.log('sessonStorage, Session: ', JSON.parse(sessionStorage.getItem('ufoknSession')))
 
         await updateToMongoDBSession({ ...globalSession, your_decisions: { ...globalSession.your_decisions, [round]: messages } })
 
@@ -917,7 +910,7 @@ export default function GrandGame() {
     }
 
     const handleClick = () => {
-        console.log("!final click!: ");
+        // console.log("!final click!: ");
     };
 
     const handleChangeWarning = (e) => {
@@ -986,7 +979,7 @@ export default function GrandGame() {
                     style={{ margin: "0.5rem" }}
                     onClick={() => {
                         setStep(step + 1);
-                        console.log("Current Game Page: ", step + 1)
+                        // console.log("Current Game Page: ", step + 1)
                     }}
                 >
                     NEXT

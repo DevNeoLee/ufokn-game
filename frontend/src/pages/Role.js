@@ -14,7 +14,7 @@ export default function Role({ step }) {
     })
 
     socket.addEventListener("message", (message) => {
-        console.log("socket got message: ", message)
+        // console.log("socket got message: ", message)
     })
 
     socket.addEventListener("close", () => {

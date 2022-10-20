@@ -44,7 +44,7 @@ export default function LogIn() {
 
         socket.on("client_count", (arg1, arg2) => {
             setClientCount(arg2)
-            console.log(arg1, arg2)
+            // console.log(arg1, arg2)
         })
 
         socket.on("leaving", () => {
@@ -78,15 +78,15 @@ export default function LogIn() {
     };
 
     const handleDemo = async () => {
-        console.log('Demo button clicked!');
+        // console.log('Demo button clicked!');
         const session = sessionStorage.getItem('ufoknSession');
         if (!session) {
             console.log('There is no know session yet..')
             const session = await createSession()
             // console.log('global session from login page: ', globalSession);
-            console.log("Session created:", session)
+            // console.log("Session created:", session)
         } else {
-            console.log('There is an session: ', session)
+            // console.log('There is an session: ', session)
         }
         socket.disconnect();
     }

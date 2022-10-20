@@ -73,12 +73,12 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
 
   const handleStart = async (e) => { 
     e.preventDefault()
-    console.log('handleStart clicked')
+    // console.log('handleStart clicked')
     // setGameStart(true)
 
     //////////////////////////We create game here with the global Game object made
     const gameResponse = await createGame();
-    console.log('Game Created: ', gameResponse)
+    // console.log('Game Created: ', gameResponse)
 
 
     ///////We sessionStorage Game with added your Game ID info
@@ -95,7 +95,7 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
     await socket.emit('game_update', gameResponse, "1")////////////////
 
     let listRoles = roles.slice(0, gameResponse.players.length);
-    console.log('listRoles: ', listRoles)
+    // console.log('listRoles: ', listRoles)
     //update sessionData in MongoDB 게임안에 있는 모든 사용자들의 세션을 압데 합니다.
     let r;
 
@@ -105,7 +105,7 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
       //각각 플레이어 마다 몽고데이터 세션을 압데 합니다. 
      
       r = listRoles[Math.floor(Math.random()*listRoles.length)]
-      console.log('randomly seletected role: ' + r + ' for ' + player._id)
+      // console.log('randomly seletected role: ' + r + ' for ' + player._id)
 
       socket.emit("role", { role: r, id: player._id })
       
@@ -113,7 +113,7 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
       ps.push({ ...player, role: r, game_id: gameResponse._id })
       // yarray.push({...player, role: r, game_id: gameResponse._id })
       // console.log('yarray: ', yarray)
-      console.log('players from valtio: ', valtioState.players)
+      // console.log('players from valtio: ', valtioState.players)
       
       setGame(game => {return { ...game, players: [...game.players, { ...game.session, ...player, role: r , game_id: gameResponse._id}], room_name: 1 }});
   
@@ -124,12 +124,12 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
       await updateToMongoDBSession({...player,role: r, game_id: gameResponse._id})
     })
 
-    console.log('game: 1', game)
-    console.log('ps: ', ps)
+    // console.log('game: 1', game)
+    // console.log('ps: ', ps)
 
     const updateWithPlayersInfoGame = await updateToMongoDBGame({ players: ps, _id: gameResponse._id})
     
-    console.log('updateWithPlayersInfoGame: ', updateWithPlayersInfoGame)
+    // console.log('updateWithPlayersInfoGame: ', updateWithPlayersInfoGame)
     
     await socket.emit('game_start', "1")
 
@@ -137,7 +137,7 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
 
   const handleWait = (e) => { 
     e.preventDefault()
-    console.log('handleWait clicked')
+    // console.log('handleWait clicked')
     setCanStartGame(false)
   }
 
@@ -174,12 +174,12 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
   }
 
   const updateToMongoDBSession = async (payload) => {
-    console.log('session data: ', sessionDataObject);
+    // console.log('session data: ', sessionDataObject);
 
     const dataUpdate = async () => {
         await axios.put(HOST + '/api/session', payload)
             .then(data => {
-                console.log('Session to MongoDB updated: ', data)
+                // console.log('Session to MongoDB updated: ', data)
                 // return data
             })
             .catch(err => console.log(err))
@@ -190,14 +190,14 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
   }
 
   const handleJoin = async () => {
-    console.log('join clicked i: ')
-    console.log('session: ', session)
-    console.log('session', session)
-    console.log('global session: ', globalSession)
+    // console.log('join clicked i: ')
+    // console.log('session: ', session)
+    // console.log('session', session)
+    // console.log('global session: ', globalSession)
 
     if (!joined && session && game.players.length < MAX_CLIENTS) {
       setGame({...game, players: [...game.players, {...session}], room_name: 1});
-      console.log('************************', session)
+      // console.log('************************', session)
 
       //we make globalGame, update globalSession here
       if (sessionDataObject) {
@@ -221,7 +221,7 @@ export default function Instruction({ updateToMongoDBGame, snap, yarray, globalG
       // }
 
     } else {
-      console.log("You already joined a room, can't not join twice")
+      // console.log("You already joined a room, can't not join twice")
       return;
     }
 

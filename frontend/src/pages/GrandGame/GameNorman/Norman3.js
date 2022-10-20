@@ -24,21 +24,21 @@ export default function Norman3({ resultReady, setSubmittedNorman, GAME_ROUND, s
 
     const navigate = useNavigate();
 
-    console.log("normanStay: ", normanStay)
-    console.log("whichRoute: ", whichRoute)
-    console.log("normanHealth: ", normanHealth)
-    console.log("waterDepthEndupNorman: ", waterDepthEndupNorman)
-    console.log("electricity: ", electricity)
+    // console.log("normanStay: ", normanStay)
+    // console.log("whichRoute: ", whichRoute)
+    // console.log("normanHealth: ", normanHealth)
+    // console.log("waterDepthEndupNorman: ", waterDepthEndupNorman)
+    // console.log("electricity: ", electricity)
 
     const handleNextRound = () => {
-        console.log('Next Round Clicked! :', round)
+        // console.log('Next Round Clicked! :', round)
     }
 
     useEffect(() => {
         if (resultReady) {
             const interval = setTimeout(() => {
 
-                console.log('round from Norman3 before: ', round)
+                // console.log('round from Norman3 before: ', round)
 
                 if (round === GAME_ROUND) {
                     navigate('/instructionformpostgame')
@@ -47,7 +47,7 @@ export default function Norman3({ resultReady, setSubmittedNorman, GAME_ROUND, s
                 setStep(prev => prev + 1);
                 setResultReady(false);
                 setSubmittedNorman(false);
-                console.log('round from Norman3 after: ', round)
+                // console.log('round from Norman3 after: ', round)
             }, 5000);
             return () => clearTimeout(interval)
         }

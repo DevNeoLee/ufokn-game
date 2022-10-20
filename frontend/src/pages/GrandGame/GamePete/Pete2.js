@@ -44,8 +44,8 @@ export default function Pete2({ decisionReady, decisionTime, ericaTime, userTask
     //     ])
     // }
     useEffect(() => {
-        console.log('globalGame: ', globalGame)
-        console.log('globalSession: ', globalSession)
+        // console.log('globalGame: ', globalGame)
+        // console.log('globalSession: ', globalSession)
 
     }, [])
 
@@ -58,7 +58,7 @@ export default function Pete2({ decisionReady, decisionTime, ericaTime, userTask
                 behavior: "smooth"
             })
         }
-        console.log('messageFromErica: ', messageFromErica)
+        // console.log('messageFromErica: ', messageFromErica)
 
     }, [containerRef2, messageFromErica])
 

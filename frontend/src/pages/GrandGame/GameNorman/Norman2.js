@@ -55,8 +55,8 @@ export default function Norman2({ decisionReady, decisionTime, ericaTime, userTa
     // }
 
     useEffect(() => {
-        console.log('globalGame: ', globalGame)
-        console.log('globalSession: ', globalSession)
+        // console.log('globalGame: ', globalGame)
+        // console.log('globalSession: ', globalSession)
 
     }, [])
 
@@ -93,7 +93,7 @@ export default function Norman2({ decisionReady, decisionTime, ericaTime, userTa
             })
         }
 
-        console.log('messageFromErica: ', messageFromErica)
+        // console.log('messageFromErica: ', messageFromErica)
 
     }, [containerRef2, messageFromErica])
 
@@ -363,13 +363,13 @@ export default function Norman2({ decisionReady, decisionTime, ericaTime, userTa
         e.preventDefault();
 
         const chatMessage = { round: round, role: role, message: chat, time: new Date() }
-        console.log('chat hoho1: ', chat)
+        // console.log('chat hoho1: ', chat)
 
         setChatData(prev => ({ ...prev, [round]: [...prev[round], chatMessage] }));
-        console.log('chat hoho chatData: ', chatData)
+        // console.log('chat hoho chatData: ', chatData)
 
         setGlobalGame(prev => ({ ...prev, chatting: { ...prev.chatting, [round]: [...prev.chatting[round], chatMessage] } }))
-        console.log('chatData globalGame just changed: ', globalGame)
+        // console.log('chatData globalGame just changed: ', globalGame)
 
         socket.emit("norman_chat", chatMessage)
         setChat("")
@@ -388,7 +388,7 @@ export default function Norman2({ decisionReady, decisionTime, ericaTime, userTa
     }
 
     const handleFormClose = () => {
-        console.log('hello there')
+        // console.log('hello there')
         setPopForm(prev => !prev)
     }
 
